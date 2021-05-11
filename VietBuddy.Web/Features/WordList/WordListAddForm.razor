@@ -1,0 +1,38 @@
+@inject WordListsRepository WordListsRepository
+@inject AppState AppState
+
+<h3 class="mt-1 mb-3">Add a word list</h3>
+ 
+<EditForm Model="wordList" OnValidSubmit="AddWordList">
+    <FluentValidationValidator />
+    <div class="row">
+        <div class="col-4">
+            <div class="form-group">
+                <label for="title" class="font-weight-bold text-secondary">Title</label>
+                <InputText @bind-Value="wordList.Title" class="form-control" id="title" autofocus/>
+                <ValidationMessage For="@(() => wordList.Title)" />
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 mb-5">
+        <div class="row">
+            <div class="col-8 text-left">
+                <button class="btn btn-primary" type="submit">Add</button>
+                <button class="btn btn-outline-secondary" type="button" @onclick="Reset">Reset</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private WordList wordList = new WordList();
+
+    private async Task AddWordList()
+    {
+        await WordListsRepository.AddWordListAsync(wordList);
+        AppState.NotifyWordListChanged();
+        Reset();
+    }
+
+    private void Reset() => wordList = new WordList();
+}
