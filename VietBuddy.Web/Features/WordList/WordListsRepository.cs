@@ -11,6 +11,8 @@ namespace VietBuddy.Web.Features.WordList
     {
         private readonly IMongoClient _mongoClient;
         private readonly IMongoCollection<WordList> _wordLists;
+        public event EventHandler WordListAdded;
+        public event EventHandler WordListDeleted;
 
         public WordListsRepository(IMongoClient mongoClient)
         {
@@ -62,6 +64,7 @@ namespace VietBuddy.Web.Features.WordList
             try
             {
                 await _wordLists.InsertOneAsync(wordList);
+                OnWordListAdded();
             }
             catch (Exception e)
             {
@@ -69,16 +72,21 @@ namespace VietBuddy.Web.Features.WordList
             }
         }
 
+        protected virtual void OnWordListAdded() => WordListAdded?.Invoke(this, EventArgs.Empty);
+
         public async Task DeleteWordListAsync(string id)
         {
             try
             {
                 await _wordLists.DeleteOneAsync(Builders<WordList>.Filter.Where(w => w.Id == id));
+                OnWordListDeleted();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
         }
+
+        protected virtual void OnWordListDeleted() => WordListDeleted?.Invoke(this, EventArgs.Empty);
     }
 }

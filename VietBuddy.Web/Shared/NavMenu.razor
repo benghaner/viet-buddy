@@ -1,5 +1,4 @@
 ﻿@inject WordListsRepository WordListsRepository
-@inject AppState AppState
 @implements IDisposable
 
 <div class="top-row pl-4 navbar navbar-dark">
@@ -32,16 +31,19 @@
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     private List<WordList> wordLists = new List<WordList>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        wordLists = await WordListsRepository.GetWordListsAsync();
+        WordListsRepository.WordListAdded += OnWordListChanged;
+        WordListsRepository.WordListDeleted += OnWordListChanged;
+    }
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        wordLists = await WordListsRepository.GetWordListsAsync();
-        AppState.WordListChanged += async () => await RefreshWordLists();
-    }
+    
+    public async void OnWordListChanged(object source, EventArgs e) => await RefreshWordLists();
 
     private async Task RefreshWordLists()
     {
@@ -51,6 +53,7 @@
 
     public void Dispose() 
     {
-        AppState.WordListChanged -= async () => await RefreshWordLists();
+        WordListsRepository.WordListAdded -= OnWordListChanged;
+        WordListsRepository.WordListDeleted -= OnWordListChanged;
     }
 }
