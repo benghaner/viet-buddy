@@ -1,5 +1,4 @@
 @inject WordListsRepository WordListsRepository
-@inject AppState AppState
 
 <h3 class="mt-1 mb-3">Add a word list</h3>
  
@@ -30,7 +29,6 @@
     private async Task AddWordList()
     {
         await WordListsRepository.AddWordListAsync(wordList);
-        AppState.NotifyWordListChanged();
         Reset();
     }
 
