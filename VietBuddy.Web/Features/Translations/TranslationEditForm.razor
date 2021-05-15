@@ -1,19 +1,28 @@
 @inject TranslationRepository Translations
 
 <EditForm Model="Translation" OnValidSubmit="Submit">
-    <div class="row mt-3 mb-3">
-        <div class="col-4 mb-3">
-            <div class="input-group mb-3">
-                <label for="vietnamese" class="input-group-text">VN</label>
-                <InputText id="vietnamese" @bind-Value="Translation.Vietnamese" class="form-control" />
-            </div>
-            <div class="input-group">
-                <label for="english" class="input-group-text">EN</label>
-                <InputText id="english" @bind-Value="Translation.English" class="form-control" />
+    <FormSection HelpText="Add a word or phrase">
+        <div class="row mb-2">
+            <div class="col">
+                <div class="input-group">
+                    <label for="vietnamese" class="input-group-text">VN</label>
+                    <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" />
+                </div>
             </div>
         </div>
         <div class="row">
-            <div>
+            <div class="col">
+                <div class="input-group">
+                    <label for="english" class="input-group-text">EN</label>
+                    <InputText @bind-Value="Translation.English" class="form-control" id="english" />
+                </div>
+            </div>
+        </div>
+    </FormSection>
+
+    <div class="mb-3">
+        <div class="row">
+            <div class="col justify-content-start">
                 <button class="btn btn-primary" type="submit">Submit</button>
                 <button class="btn btn-outline-secondary" type="button" @onclick="Reset">Reset</button>
             </div>
