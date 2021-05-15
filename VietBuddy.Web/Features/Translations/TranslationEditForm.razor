@@ -1,13 +1,6 @@
 @inject TranslationRepository Translations
 
-@if (_isNew)
-{
-    <h2>Add a translation</h2>
-}
-else
-{
-    <h2>Edit translation</h2>
-}
+<h2>@(_isNew ? "Add a " : "Edit ")translation</h2>
 
 <EditForm Model="_translation" OnValidSubmit="Submit">
     <FormSection HelpText="Add a word or phrase">
@@ -89,7 +82,8 @@ else
 
     private void AddTag()
     {
-        _translation.Tags.Add(_tag);
+        if (!String.IsNullOrEmpty(_tag))
+            _translation.Tags.Add(_tag);
         _tag = "";
     }
 
