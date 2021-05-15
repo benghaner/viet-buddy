@@ -1,5 +1,14 @@
 @inject TranslationRepository Translations
 
+@if (_isNew)
+{
+    <h2>Add a translation</h2>
+}
+else
+{
+    <h2>Edit translation</h2>
+}
+
 <EditForm Model="_translation" OnValidSubmit="Submit">
     <FormSection HelpText="Add a word or phrase">
         <div class="input-group mb-2">
@@ -14,14 +23,14 @@
 
     <FormSection HelpText="Tag your translation with some context">
         <div class="input-group">
-            <button class="btn btn-outline-secondary" type="button" @onclick="AddTag">
-                <i class="fas fa-plus"></i>
-            </button>
             <InputText @bind-Value="_tag" class="form-control" placeholder="E.g. A book title"/>
+            <button class="btn btn-outline-secondary" type="button" @onclick="AddTag">
+                <i class="fas fa-plus"></i> Add
+            </button>
         </div>
         @if (_translation.Tags.Any())
         {
-            <div class="tags mt-3">
+            <div class="mt-3">
                 @foreach (var tag in _translation.Tags)
                 {
                     <span class="badge rounded-pill bg-success" @onclick="@(() => RemoveTag(tag))">
@@ -32,13 +41,16 @@
         }
     </FormSection>
 
-    <div class="mb-3">
-        <div class="row">
-            <div class="col justify-content-start">
-                <button class="btn btn-primary" type="submit">Submit</button>
-                <button class="btn btn-outline-secondary" type="button" @onclick="Reset">Reset</button>
-            </div>
-        </div>
+    <div class="d-flex gap-1">
+        <button class="btn btn-primary" type="submit">Submit</button>
+        @if (_isNew)
+        {
+            <button class="btn btn-outline-secondary" type="button" @onclick="Reset">Reset</button>
+        }
+        else
+        {
+            <button class="btn btn-outline-danger" type="button" @onclick="Delete">Delete</button>
+        }
     </div>
 </EditForm>
 
@@ -46,6 +58,7 @@
     [Parameter] public Translation Translation { get; set; }
     private Translation _translation;
     private string _tag;
+    private bool _isNew { get => _translation.Id == null; }
 
     protected override void OnInitialized()
     {
@@ -65,7 +78,7 @@
 
     private async Task Submit()
     {
-        if (_translation.Id == null)
+        if (_isNew)
         {
             await Translations.AddAsync(_translation);
             Reset();
@@ -76,5 +89,10 @@
     {
         _translation = new Translation();
         _tag = "";
+    }
+
+    private void Delete()
+    {
+        throw new NotImplementedException();
     }
 }
