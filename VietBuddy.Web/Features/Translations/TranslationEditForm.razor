@@ -1,23 +1,35 @@
 @inject TranslationRepository Translations
 
-<EditForm Model="Translation" OnValidSubmit="Submit">
+<EditForm Model="_translation" OnValidSubmit="Submit">
     <FormSection HelpText="Add a word or phrase">
-        <div class="row mb-2">
-            <div class="col">
-                <div class="input-group">
-                    <label for="vietnamese" class="input-group-text">VN</label>
-                    <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" />
-                </div>
-            </div>
+        <div class="input-group mb-2">
+            <label for="vietnamese" class="input-group-text">VN</label>
+            <InputText @bind-Value="_translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="input-group">
-                    <label for="english" class="input-group-text">EN</label>
-                    <InputText @bind-Value="Translation.English" class="form-control" id="english" />
-                </div>
-            </div>
+        <div class="input-group">
+            <label for="english" class="input-group-text">EN</label>
+            <InputText @bind-Value="_translation.English" class="form-control" id="english" />
         </div>
+    </FormSection>
+
+    <FormSection HelpText="Tag your translation with some context">
+        <div class="input-group">
+            <button class="btn btn-outline-secondary" type="button" @onclick="AddTag">
+                <i class="fas fa-plus"></i>
+            </button>
+            <InputText @bind-Value="_tag" class="form-control" placeholder="E.g. A book title"/>
+        </div>
+        @if (_translation.Tags.Any())
+        {
+            <div class="tags mt-3">
+                @foreach (var tag in _translation.Tags)
+                {
+                    <span class="badge rounded-pill bg-success" @onclick="@(() => RemoveTag(tag))">
+                        @tag
+                    </span>
+                }
+            </div>
+        }
     </FormSection>
 
     <div class="mb-3">
@@ -31,19 +43,38 @@
 </EditForm>
 
 @code {
-    [Parameter] public Translation Translation { get; set; } = new Translation();
+    [Parameter] public Translation Translation { get; set; }
+    private Translation _translation;
+    private string _tag;
+
+    protected override void OnInitialized()
+    {
+        _translation = (Translation != null) ? Translation : new Translation();
+    }
+
+    private void AddTag()
+    {
+        _translation.Tags.Add(_tag);
+        _tag = "";
+    }
+
+    private void RemoveTag(string tag)
+    {
+        _translation.Tags.Remove(tag);
+    }
 
     private async Task Submit()
     {
-        if (Translation.Id == null)
+        if (_translation.Id == null)
         {
-            await Translations.AddAsync(Translation);
+            await Translations.AddAsync(_translation);
             Reset();
         }
     }
 
     private void Reset()
     {
-        Translation = new Translation();
+        _translation = new Translation();
+        _tag = "";
     }
 }

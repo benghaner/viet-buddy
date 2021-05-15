@@ -1,0 +1,12 @@
+.tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tags .badge {
+    cursor: pointer;
+}
+
+.tags .badge:hover {
+    background-color: red !important;
+}
