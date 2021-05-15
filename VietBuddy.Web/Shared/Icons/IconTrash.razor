@@ -1,6 +1,5 @@
-<i class="far fa-trash-alt" style="font-size: @FontSize;" @onclick="@(() => Clicked.InvokeAsync())"></i>
+<i class="far fa-trash-alt" @onclick="@(() => Clicked.InvokeAsync())"></i>
 
 @code {
-    [Parameter] public string FontSize { get; set; } = "1rem";
     [Parameter] public EventCallback Clicked { get; set; }
 }

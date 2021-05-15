@@ -21,6 +21,27 @@ else
         </div>
     </FormSection>
 
+    <FormSection HelpText="Include some example sentences">
+        <div class="input-group">
+            <InputText @bind-Value="_example" class="form-control"/>
+            <button class="btn btn-outline-secondary" type="button" @onclick="AddExample">
+                <i class="fas fa-plus"></i> Add
+            </button>
+        </div>
+        @if (_translation.Examples.Any())
+        {
+            <div class="mt-3">
+                @foreach (var example in _translation.Examples)
+                {
+                    <p class="d-flex gap-2 align-items-center">
+                        <IconTrash Clicked="@(() => RemoveExample(example))" />
+                        @example
+                    </p>
+                }
+            </div>
+        }
+    </FormSection>
+
     <FormSection HelpText="Tag your translation with some context">
         <div class="input-group">
             <InputText @bind-Value="_tag" class="form-control" placeholder="E.g. A book title"/>
@@ -58,6 +79,7 @@ else
     [Parameter] public Translation Translation { get; set; }
     private Translation _translation;
     private string _tag;
+    private string _example;
     private bool _isNew { get => _translation.Id == null; }
 
     protected override void OnInitialized()
@@ -75,6 +97,18 @@ else
     {
         _translation.Tags.Remove(tag);
     }
+    
+    private void AddExample()
+    {
+        if (!String.IsNullOrEmpty(_example))
+            _translation.Examples.Add(_example);
+        _example = "";
+    }
+
+    private void RemoveExample(string example)
+    {
+        _translation.Examples.Remove(example);
+    }
 
     private async Task Submit()
     {
@@ -89,6 +123,7 @@ else
     {
         _translation = new Translation();
         _tag = "";
+        _example = "";
     }
 
     private void Delete()
