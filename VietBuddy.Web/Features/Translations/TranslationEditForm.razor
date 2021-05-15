@@ -73,11 +73,12 @@
     private Translation _translation;
     private string _tag;
     private string _example;
-    private bool _isNew { get => _translation.Id == null; }
+    private bool _isNew;
 
     protected override void OnInitialized()
     {
         _translation = (Translation != null) ? Translation : new Translation();
+        _isNew = (_translation.Id == null);
     }
 
     private void AddTag()
