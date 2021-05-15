@@ -30,10 +30,10 @@ else
         </div>
         @if (_translation.Tags.Any())
         {
-            <div class="mt-3">
+            <div class="d-flex gap-1 mt-3 fs-4">
                 @foreach (var tag in _translation.Tags)
                 {
-                    <span class="badge rounded-pill bg-success" @onclick="@(() => RemoveTag(tag))">
+                    <span class="badge rounded-pill bg-success fw-light" @onclick="@(() => RemoveTag(tag))">
                         @tag
                     </span>
                 }
