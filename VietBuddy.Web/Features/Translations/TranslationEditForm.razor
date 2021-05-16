@@ -14,13 +14,8 @@
         </div>
     </FormSection>
 
-    <FormSection HelpText="Include some example sentences">
-        <div class="input-group">
-            <button class="btn btn-outline-secondary" type="button" @onclick="AddExample">
-                <i class="fas fa-plus"></i> Add
-            </button>
-            <InputText @bind-Value="example" class="form-control"/>
-        </div>
+    <FormSection HelpText="Include some sentences">
+        <InputText @bind-Value="example" class="form-control" />
         @if (translation.Examples.Any())
         {
             <div class="mt-3">
@@ -74,7 +69,18 @@
 
 @code {
     [Parameter] public Translation translation { get; set; } = new Translation();
-    private string example;
+    private string _example;
+    public string example
+    {
+        get { return _example; }
+        set
+        {
+            _example = value;
+            translation.Examples.Add(value);
+            _example = "";
+        }
+    }
+    
     private string _tag;
     private string tag
     {
@@ -95,17 +101,7 @@
 
     private void RemoveTag(string tag) => translation.Tags.Remove(tag);
     
-    private void AddExample()
-    {
-        if (!String.IsNullOrEmpty(example))
-            translation.Examples.Add(example);
-        example = "";
-    }
-
-    private void RemoveExample(string example)
-    {
-        translation.Examples.Remove(example);
-    }
+    private void RemoveExample(string example) => translation.Examples.Remove(example);
 
     private async Task Submit()
     {
@@ -116,11 +112,7 @@
         }
     }
 
-    private void Reset()
-    {
-        translation = new Translation();
-        example = "";
-    }
+    private void Reset() => translation = new Translation();
 
     private void Delete()
     {
