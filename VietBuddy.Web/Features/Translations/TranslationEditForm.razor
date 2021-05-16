@@ -35,13 +35,16 @@
         }
     </FormSection>
 
-    <FormSection HelpText="Tag your translation with some context">
-        <div class="input-group">
-            <button class="btn btn-outline-secondary" type="button" @onclick="AddTag">
-                <i class="fas fa-plus"></i> Add
-            </button>
-            <InputText @bind-Value="_tag" class="form-control" placeholder="E.g. A book title"/>
-        </div>
+    <FormSection HelpText="Tag a book, person, etc. for context">
+        @* <label for="tags" class="form-label"></label> *@
+        <InputText class="form-control" 
+            list="tagsList" 
+            id="tags" 
+            placeholder="New or existing tag..."
+            @bind-Value="Tag" />
+        <datalist id="tagsList">
+            @* <option value="dế mèn phiêu lưu ký" /> *@
+        </datalist>
         @if (_translation.Tags.Any())
         {
             <div class="mt-3">
@@ -72,8 +75,19 @@
 @code {
     [Parameter] public Translation Translation { get; set; }
     private Translation _translation;
-    private string _tag;
     private string _example;
+    private string tag;
+    public string Tag
+    {
+        get { return tag; }
+        set
+        {
+            tag = value;
+            _translation.Tags.Add(value);
+            tag = "";
+        }
+    }
+    
     private bool _isNew;
 
     protected override void OnInitialized()
@@ -82,17 +96,7 @@
         _isNew = (_translation.Id == null);
     }
 
-    private void AddTag()
-    {
-        if (!String.IsNullOrEmpty(_tag))
-            _translation.Tags.Add(_tag);
-        _tag = "";
-    }
-
-    private void RemoveTag(string tag)
-    {
-        _translation.Tags.Remove(tag);
-    }
+    private void RemoveTag(string tag) => _translation.Tags.Remove(tag);
     
     private void AddExample()
     {
@@ -118,7 +122,6 @@
     private void Reset()
     {
         _translation = new Translation();
-        _tag = "";
         _example = "";
     }
 
