@@ -1,0 +1,17 @@
+@page "/translations"
+@inject TranslationRepository TranslationRepository
+
+<header>
+    <h2>Translations</h2>
+    @* <IconTrash /> *@
+</header>
+<TranslationsTable Translations="translations"></TranslationsTable>
+
+@code {
+    private List<Translation> translations = new List<Translation>();
+        
+    protected override async Task OnInitializedAsync()
+    {
+        translations = await TranslationRepository.GetAsync();
+    }
+}

@@ -1,0 +1,28 @@
+@if (Translations.Any())
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Vietnamese</th>
+            <th>English</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var translation in Translations)
+        {
+            <tr>
+                <td>@translation.Vietnamese</td>
+                <td>@translation.English</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Add your first translation :)</p>
+}
+
+@code {
+    [Parameter] public List<Translation> Translations { get; set; }
+}

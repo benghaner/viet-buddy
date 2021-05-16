@@ -1,4 +1,4 @@
-@inject TranslationRepository translations
+@inject TranslationRepository TranslationRepository
 
 <h2>@(isNew ? "Add a " : "Edit ")translation</h2>
 
@@ -107,7 +107,7 @@
     {
         if (isNew)
         {
-            await translations.AddAsync(translation);
+            await TranslationRepository.AddAsync(translation);
             Reset();
         }
     }
