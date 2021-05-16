@@ -14,7 +14,8 @@
         </div>
     </FormSection>
 
-    <FormSection HelpText="Include some sentences">
+    <FormSection>
+        <label for="tags" class="form-label text-secondary">Tag a book, person, etc. for context</label>
         <InputText @bind-Value="example" class="form-control" />
         @if (translation.Examples.Any())
         {
@@ -30,11 +31,11 @@
         }
     </FormSection>
 
-    <FormSection HelpText="Tag a book, person, etc. for context">
-        @* <label for="tags" class="form-label"></label> *@
-        <InputText class="form-control" 
-            list="tagsList" 
-            id="tags" 
+    <FormSection>
+        <label for="tags" class="form-label text-secondary">Tag a book, person, etc. for context</label>
+        <InputText class="form-control"
+            list="tagsList"
+            id="tags"
             placeholder="New or existing tag..."
             @bind-Value="tag" />
         <datalist id="tagsList">
@@ -80,7 +81,6 @@
             _example = "";
         }
     }
-    
     private string _tag;
     private string tag
     {

@@ -1,6 +1,9 @@
 <div class="card bg-light mt-3 mb-3">
     <div class="card-body">
-        <p class="text-secondary">@HelpText</p>
+        @if (!String.IsNullOrEmpty(HelpText))
+        {
+            <p class="text-secondary">@HelpText</p>
+        }
         @ChildContent
     </div>
 </div>
