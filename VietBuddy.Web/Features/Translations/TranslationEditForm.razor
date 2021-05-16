@@ -1,16 +1,16 @@
-@inject TranslationRepository Translations
+@inject TranslationRepository translations
 
-<h2>@(_isNew ? "Add a " : "Edit ")translation</h2>
+<h2>@(isNew ? "Add a " : "Edit ")translation</h2>
 
-<EditForm Model="_translation" OnValidSubmit="Submit">
+<EditForm Model="translation" OnValidSubmit="Submit">
     <FormSection HelpText="Add a word or phrase">
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="_translation.Vietnamese" class="form-control" id="vietnamese" autofocus required />
+            <InputText @bind-Value="translation.Vietnamese" class="form-control" id="vietnamese" autofocus required />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="_translation.English" class="form-control" id="english" required />
+            <InputText @bind-Value="translation.English" class="form-control" id="english" required />
         </div>
     </FormSection>
 
@@ -19,12 +19,12 @@
             <button class="btn btn-outline-secondary" type="button" @onclick="AddExample">
                 <i class="fas fa-plus"></i> Add
             </button>
-            <InputText @bind-Value="_example" class="form-control"/>
+            <InputText @bind-Value="example" class="form-control"/>
         </div>
-        @if (_translation.Examples.Any())
+        @if (translation.Examples.Any())
         {
             <div class="mt-3">
-                @foreach (var example in _translation.Examples)
+                @foreach (var example in translation.Examples)
                 {
                     <p class="d-flex gap-2 align-items-center">
                         <IconTrash Clicked="@(() => RemoveExample(example))" />
@@ -41,14 +41,14 @@
             list="tagsList" 
             id="tags" 
             placeholder="New or existing tag..."
-            @bind-Value="Tag" />
+            @bind-Value="tag" />
         <datalist id="tagsList">
             @* <option value="dế mèn phiêu lưu ký" /> *@
         </datalist>
-        @if (_translation.Tags.Any())
+        @if (translation.Tags.Any())
         {
             <div class="mt-3">
-                @foreach (var tag in _translation.Tags)
+                @foreach (var tag in translation.Tags)
                 {
                     <p class="d-flex gap-2 align-items-center">
                         <IconTrash Clicked="@(() => RemoveTag(tag))" />
@@ -61,7 +61,7 @@
 
     <div class="d-flex gap-1">
         <button class="btn btn-primary" type="submit">Submit</button>
-        @if (_isNew)
+        @if (isNew)
         {
             <button class="btn btn-outline-secondary" type="button" @onclick="Reset">Reset</button>
         }
@@ -73,56 +73,53 @@
 </EditForm>
 
 @code {
-    [Parameter] public Translation Translation { get; set; }
-    private Translation _translation;
-    private string _example;
-    private string tag;
-    public string Tag
+    [Parameter] public Translation translation { get; set; } = new Translation();
+    private string example;
+    private string _tag;
+    private string tag
     {
-        get { return tag; }
+        get { return _tag; }
         set
         {
-            tag = value;
-            _translation.Tags.Add(value);
-            tag = "";
+            _tag = value;
+            translation.Tags.Add(value);
+            _tag = "";
         }
     }
-    
-    private bool _isNew;
+    private bool isNew;
 
     protected override void OnInitialized()
     {
-        _translation = (Translation != null) ? Translation : new Translation();
-        _isNew = (_translation.Id == null);
+        isNew = (translation.Id == null);
     }
 
-    private void RemoveTag(string tag) => _translation.Tags.Remove(tag);
+    private void RemoveTag(string tag) => translation.Tags.Remove(tag);
     
     private void AddExample()
     {
-        if (!String.IsNullOrEmpty(_example))
-            _translation.Examples.Add(_example);
-        _example = "";
+        if (!String.IsNullOrEmpty(example))
+            translation.Examples.Add(example);
+        example = "";
     }
 
     private void RemoveExample(string example)
     {
-        _translation.Examples.Remove(example);
+        translation.Examples.Remove(example);
     }
 
     private async Task Submit()
     {
-        if (_isNew)
+        if (isNew)
         {
-            await Translations.AddAsync(_translation);
+            await translations.AddAsync(translation);
             Reset();
         }
     }
 
     private void Reset()
     {
-        _translation = new Translation();
-        _example = "";
+        translation = new Translation();
+        example = "";
     }
 
     private void Delete()
