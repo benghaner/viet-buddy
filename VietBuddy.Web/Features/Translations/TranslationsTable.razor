@@ -3,6 +3,7 @@
     <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>Vietnamese</th>
             <th>English</th>
         </tr>
@@ -11,6 +12,9 @@
         @foreach (var translation in Translations)
         {
             <tr>
+                <td>
+                    <i class="far fa-edit btn" @onclick="@(() => ShowEditTranslation(translation))"></i>
+                </td>
                 <td>@translation.Vietnamese</td>
                 <td>@translation.English</td>
             </tr>
@@ -24,5 +28,14 @@ else
 }
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
     [Parameter] public List<Translation> Translations { get; set; }
+    
+    private void ShowEditTranslation(Translation translation)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(Translation), translation);
+
+        Modal.Show<TranslationEditForm>("Edit Translation", parameters);
+    }
 }

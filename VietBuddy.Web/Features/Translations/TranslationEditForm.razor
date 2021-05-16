@@ -1,6 +1,9 @@
 @inject TranslationRepository TranslationRepository
 
-<h2>@(isNew ? "Add a " : "Edit ")translation</h2>
+@if (!String.IsNullOrEmpty(HeaderText))
+{   
+    <h2>@HeaderText</h2>
+}
 
 <EditForm Model="translation" OnValidSubmit="Submit">
     <FormSection HelpText="Add a word or phrase">
@@ -70,6 +73,7 @@
 
 @code {
     [Parameter] public Translation translation { get; set; } = new Translation();
+    [Parameter] public string HeaderText { get; set; }
     private string _example;
     public string example
     {
