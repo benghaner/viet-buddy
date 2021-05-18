@@ -60,18 +60,15 @@
 
     <div class="d-flex gap-1">
         <button class="btn btn-primary" type="submit">Submit</button>
-        @if (isNew)
+        @if (isModal)
         {
-            <button class="btn btn-outline-secondary" type="button" @onclick="Reset">Reset</button>
-        }
-        else
-        {
-            <button class="btn btn-outline-danger" type="button" @onclick="Delete">Delete</button>
+            <button @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
         }
     </div>
 </EditForm>
 
 @code {
+    [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
     private string _example;
@@ -97,10 +94,12 @@
         }
     }
     private bool isNew;
+    private bool isModal;
 
     protected override void OnInitialized()
     {
         isNew = (translation.Id == null);
+        isModal = (ModalInstance != null);
     }
 
     private void RemoveTag(string tag) => translation.Tags.Remove(tag);
