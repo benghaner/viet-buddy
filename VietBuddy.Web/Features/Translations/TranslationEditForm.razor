@@ -25,8 +25,8 @@
             <div class="mt-3">
                 @foreach (var example in translation.Examples)
                 {
-                    <p class="d-flex gap-2 align-items-center">
-                        <IconTrash Clicked="@(() => RemoveExample(example))" />
+                    <p class="d-flex gap-2 align-items-center m-0">
+                        <ButtonTrash Clicked="@(() => RemoveExample(example))" />
                         <span>@example</span>
                     </p>
                 }
@@ -49,8 +49,8 @@
             <div class="mt-3">
                 @foreach (var tag in translation.Tags)
                 {
-                    <p class="d-flex gap-2 align-items-center">
-                        <IconTrash Clicked="@(() => RemoveTag(tag))" />
+                    <p class="d-flex gap-2 align-items-center m-0">
+                        <ButtonTrash Clicked="@(() => RemoveTag(tag))" />
                         <span>@tag</span>
                     </p>
                 }
@@ -58,11 +58,15 @@
         }
     </FormSection>
 
-    <div class="d-flex gap-1">
+    <div class="d-flex gap-1 align-items-center">
         <button class="btn btn-primary" type="submit">Submit</button>
         @if (isModal)
         {
             <button @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
+        }
+        @if (!isNew)
+        {
+            <ButtonTrash Size="2x" Class="ms-auto" Clicked="Delete" />
         }
     </div>
 </EditForm>
@@ -119,6 +123,7 @@
 
     private void Delete()
     {
-        throw new NotImplementedException();
+        if (isModal)
+            ModalInstance.CloseAsync();
     }
 }
