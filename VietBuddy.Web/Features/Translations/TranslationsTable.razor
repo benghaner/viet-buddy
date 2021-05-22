@@ -13,7 +13,7 @@
         {
             <tr>
                 <td>
-                    <i class="far fa-edit btn" @onclick="@(() => ShowEditTranslation(translation))"></i>
+                    <i class="far fa-edit btn" @onclick="@(() => ShowEditModal(translation))"></i>
                 </td>
                 <td>@translation.Vietnamese</td>
                 <td>@translation.English</td>
@@ -31,13 +31,22 @@ else
     [CascadingParameter] public IModalService Modal { get; set; }
     [Parameter] public List<Translation> Translations { get; set; }
     
-    private void ShowEditTranslation(Translation translation)
+    private async Task ShowEditModal(Translation translation)
     {
         var editModel = new TranslationEditModel(translation);
 
         var parameters = new ModalParameters();
         parameters.Add("EditModel", editModel);
 
-        Modal.Show<TranslationEditForm>("Edit Translation", parameters);
+        var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
+        var result = await modal.Result;
+
+        if (!result.Cancelled)
+        {
+            var editResult = (EditResult)result.Data;
+
+            if (editResult == EditResult.Deleted)
+                Translations.Remove(translation);
+        }
     }
 }

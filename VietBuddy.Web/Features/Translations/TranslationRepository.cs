@@ -39,5 +39,17 @@ namespace VietBuddy.Web.Features.Translations
                 throw new NotImplementedException();
             }
         }
+
+        public async Task DeleteAsync(Translation translation)
+        {
+            try
+            {
+                await _collection.DeleteOneAsync<Translation>(t => t.Id == translation.Id);
+            }
+            catch (MongoException)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

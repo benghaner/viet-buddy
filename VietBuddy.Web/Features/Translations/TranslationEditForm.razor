@@ -119,9 +119,11 @@
 
     private void Reset() => EditModel = new TranslationEditModel();
 
-    private void Delete()
+    private async Task Delete()
     {
+        await TranslationRepository.DeleteAsync(EditModel.Translation);
+
         if (isModal)
-            ModalInstance.CloseAsync();
+            await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Deleted));
     }
 }
