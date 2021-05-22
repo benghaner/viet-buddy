@@ -22,7 +22,7 @@ namespace VietBuddy.Web.Features.Translations
             {
                 await _collection.InsertOneAsync(translation);
             }
-            catch (MongoException e)
+            catch (MongoException)
             {
                 throw new NotImplementedException();
             }
@@ -34,7 +34,7 @@ namespace VietBuddy.Web.Features.Translations
             {
                 return await _collection.Find(c => true).ToListAsync();
             }
-            catch (MongoException e)
+            catch (MongoException)
             {
                 throw new NotImplementedException();
             }

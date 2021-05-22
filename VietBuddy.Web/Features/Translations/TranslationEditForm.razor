@@ -5,25 +5,25 @@
     <h2>@HeaderText</h2>
 }
 
-<EditForm Model="translation" OnValidSubmit="Submit">
+<EditForm Model="EditModel" OnValidSubmit="Submit">
     <FormSection HelpText="Add a word or phrase">
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="translation.Vietnamese" class="form-control" id="vietnamese" autofocus required />
+            <InputText @bind-Value="EditModel.Translation.Vietnamese" class="form-control" id="vietnamese" autofocus required />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="translation.English" class="form-control" id="english" required />
+            <InputText @bind-Value="EditModel.Translation.English" class="form-control" id="english" required />
         </div>
     </FormSection>
 
     <FormSection>
         <label for="tags" class="form-label text-secondary">Include example sentences</label>
         <InputText @bind-Value="example" class="form-control" />
-        @if (translation.Examples.Any())
+        @if (EditModel.Translation.Examples.Any())
         {
             <div class="mt-3">
-                @foreach (var example in translation.Examples)
+                @foreach (var example in EditModel.Translation.Examples)
                 {
                     <p class="d-flex gap-2 align-items-center m-0">
                         <ButtonTrash Clicked="@(() => RemoveExample(example))" />
@@ -44,10 +44,10 @@
         <datalist id="tagsList">
             @* <option value="dế mèn phiêu lưu ký" /> *@
         </datalist>
-        @if (translation.Tags.Any())
+        @if (EditModel.Translation.Tags.Any())
         {
             <div class="mt-3">
-                @foreach (var tag in translation.Tags)
+                @foreach (var tag in EditModel.Translation.Tags)
                 {
                     <p class="d-flex gap-2 align-items-center m-0">
                         <ButtonTrash Clicked="@(() => RemoveTag(tag))" />
@@ -64,7 +64,7 @@
         {
             <button @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
         }
-        @if (!isNew)
+        @if (!EditModel.IsNew)
         {
             <ButtonTrash Size="2x" Class="ms-auto" Clicked="Delete" />
         }
@@ -73,7 +73,7 @@
 
 @code {
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public Translation translation { get; set; } = new Translation();
+    [Parameter] public TranslationEditModel EditModel { get; set; } = new TranslationEditModel();
     [Parameter] public string HeaderText { get; set; }
     private string _example;
     public string example
@@ -82,7 +82,7 @@
         set
         {
             _example = value;
-            translation.Examples.Add(value);
+            EditModel.Translation.Examples.Add(value);
             _example = "";
         }
     }
@@ -93,33 +93,31 @@
         set
         {
             _tag = value;
-            translation.Tags.Add(value);
+            EditModel.Translation.Tags.Add(value);
             _tag = "";
         }
     }
-    private bool isNew;
     private bool isModal;
 
     protected override void OnInitialized()
     {
-        isNew = (translation.Id == null);
         isModal = (ModalInstance != null);
     }
 
-    private void RemoveTag(string tag) => translation.Tags.Remove(tag);
+    private void RemoveTag(string tag) => EditModel.Translation.Tags.Remove(tag);
     
-    private void RemoveExample(string example) => translation.Examples.Remove(example);
+    private void RemoveExample(string example) => EditModel.Translation.Examples.Remove(example);
 
     private async Task Submit()
     {
-        if (isNew)
+        if (EditModel.IsNew)
         {
-            await TranslationRepository.AddAsync(translation);
+            await TranslationRepository.AddAsync(EditModel.Translation);
             Reset();
         }
     }
 
-    private void Reset() => translation = new Translation();
+    private void Reset() => EditModel = new TranslationEditModel();
 
     private void Delete()
     {
