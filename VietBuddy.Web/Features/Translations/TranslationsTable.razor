@@ -44,9 +44,11 @@ else
         if (!result.Cancelled)
         {
             var editResult = (EditResult)result.Data;
+            var indexOf = Translations.IndexOf(translation);
+            Translations.RemoveAt(indexOf);
 
-            if (editResult == EditResult.Deleted)
-                Translations.Remove(translation);
+            if (editResult == EditResult.Modified)
+                Translations.Add(editModel.Translation);
         }
     }
 }

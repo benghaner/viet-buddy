@@ -115,6 +115,13 @@
             await TranslationRepository.AddAsync(EditModel.Translation);
             Reset();
         }
+        else
+        {
+            await TranslationRepository.UpdateAsync(EditModel.Translation);
+        }
+
+        if (isModal)
+            await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Modified));
     }
 
     private void Reset() => EditModel = new TranslationEditModel();
