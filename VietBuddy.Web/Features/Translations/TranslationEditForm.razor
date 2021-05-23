@@ -1,4 +1,5 @@
 @using VietBuddy.Web.Shared.Buttons
+@using Blazored.FluentValidation
 @inject TranslationRepository TranslationRepository
 
 @if (!String.IsNullOrEmpty(HeaderText))
@@ -7,14 +8,16 @@
 }
 
 <EditForm Model="Translation" OnValidSubmit="Submit">
+    <FluentValidationValidator />
+
     <FormSection HelpText="Add a word or phrase">
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus required />
+            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="Translation.English" class="form-control" id="english" required />
+            <InputText @bind-Value="Translation.English" class="form-control" id="english" />
         </div>
     </FormSection>
 
