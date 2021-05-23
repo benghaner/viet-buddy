@@ -7,7 +7,7 @@
     <h2>@HeaderText</h2>
 }
 
-<EditForm Model="Translation" OnValidSubmit="Submit">
+<EditForm EditContext="editContext" OnValidSubmit="Submit">
     <FluentValidationValidator />
 
     <FormSection HelpText="Add a word or phrase">
@@ -103,11 +103,19 @@
     }
     private bool isModal;
     private bool isNew;
+    private EditContext editContext;
 
     protected override void OnInitialized()
     {
         isModal = (ModalInstance != null);
         isNew = (Translation.Id == null);
+        SetupEditContext(Translation);
+    }
+
+    private void SetupEditContext(Translation translation)
+    {
+        editContext = new EditContext(translation);
+        editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
     }
 
     private void RemoveTag(string tag) => Translation.Tags.Remove(tag);
@@ -130,7 +138,11 @@
             await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Modified));
     }
 
-    private void Reset() => Translation = new Translation();
+    private void Reset()
+    {
+        Translation = new Translation();
+        SetupEditContext(Translation);
+    }
 
     private async Task Delete()
     {
