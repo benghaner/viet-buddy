@@ -10,7 +10,7 @@
 <EditForm EditContext="editContext" OnValidSubmit="Submit">
     <FluentValidationValidator />
 
-    <FormSection HelpText="Add a word or phrase">
+    <FormSection HelpText="Word or phrase">
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
             <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
@@ -21,29 +21,26 @@
         </div>
     </FormSection>
 
-    <FormSection>
-        <label for="tags" class="form-label text-secondary">Include example sentences</label>
-        <InputText @bind-Value="example" class="form-control" />
-        @if (Translation.Examples.Any())
+    <FormSection HelpText="Example sentences">
+        @if (!Translation.Examples.Any()) { AddEmptyExample(); }
+        @foreach (var example in Translation.Examples)
         {
-            <div class="mt-3">
-                @foreach (var example in Translation.Examples)
-                {
-                    <p class="d-flex gap-2 align-items-center m-0">
-                        <ButtonTrash Clicked="@(() => RemoveExample(example))" />
-                        <span>@example</span>
-                    </p>
-                }
+            <div class="input-group mb-3">
+                <InputText @bind-Value="example.Text" class="form-control" />
+                <button type="button"
+                    class="btn btn-outline-secondary"
+                    @onclick="@(() => Translation.Examples.Remove(example))">
+                    Delete
+                </button>
             </div>
         }
+        <button type="button" class="btn btn-outline-secondary" @onclick="AddEmptyExample">Add another</button>
     </FormSection>
 
-    <FormSection>
-        <label for="tags" class="form-label text-secondary">Tag a book, person, etc. for context</label>
+    <FormSection HelpText="Additional context. A book, person, etc.">
         <InputText class="form-control"
             list="tagsList"
             id="tags"
-            placeholder="New or existing tag..."
             @bind-Value="tag" />
         <datalist id="tagsList">
             @* <option value="dế mèn phiêu lưu ký" /> *@
@@ -63,10 +60,10 @@
     </FormSection>
 
     <div class="d-flex gap-1 align-items-center">
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
         @if (isModal)
         {
-            <button @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
+            <button type="button" @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
         }
         @if (!isNew)
         {
@@ -79,17 +76,6 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation Translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
-    private string _example;
-    public string example
-    {
-        get { return _example; }
-        set
-        {
-            _example = value;
-            Translation.Examples.Add(value);
-            _example = "";
-        }
-    }
     private string _tag;
     private string tag
     {
@@ -118,10 +104,9 @@
         editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
     }
 
+    private void AddEmptyExample() => Translation.Examples.Add(new Example());
     private void RemoveTag(string tag) => Translation.Tags.Remove(tag);
     
-    private void RemoveExample(string example) => Translation.Examples.Remove(example);
-
     private async Task Submit()
     {
         if (isNew)
