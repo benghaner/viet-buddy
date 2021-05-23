@@ -1,0 +1,9 @@
+<button class="btn p-1 m-0 link-danger @Class" @onclick="@(() => Clicked.InvokeAsync())" aria-label="Delete">
+    <i class="fal fa-trash-alt fa-@Size"></i>
+</button>
+
+@code {
+    [Parameter] public string Size { get; set; }
+    [Parameter] public string Class { get; set; }
+    [Parameter] public EventCallback Clicked { get; set; }
+}

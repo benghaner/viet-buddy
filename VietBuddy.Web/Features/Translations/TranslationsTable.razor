@@ -3,6 +3,7 @@
     <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>Vietnamese</th>
             <th>English</th>
         </tr>
@@ -11,6 +12,9 @@
         @foreach (var translation in Translations)
         {
             <tr>
+                <td>
+                    <i class="far fa-edit btn" @onclick="@(() => ShowEditModal(translation))"></i>
+                </td>
                 <td>@translation.Vietnamese</td>
                 <td>@translation.English</td>
             </tr>
@@ -24,5 +28,30 @@ else
 }
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; }
     [Parameter] public List<Translation> Translations { get; set; }
+    
+    private async Task ShowEditModal(Translation translation)
+    {
+        var clone = translation.Clone();
+
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(Translation), clone);
+
+        var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
+        var result = await modal.Result;
+
+        if (!result.Cancelled)
+        {
+            var editResult = (EditResult)result.Data;
+
+            if (editResult == EditResult.Modified)
+                Translations.ReplaceById(clone);
+
+            if (editResult == EditResult.Deleted)
+                Translations.RemoveAll(x => x.Id == translation.Id);
+
+            StateHasChanged();
+        }
+    }
 }

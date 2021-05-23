@@ -22,7 +22,7 @@ namespace VietBuddy.Web.Features.Translations
             {
                 await _collection.InsertOneAsync(translation);
             }
-            catch (MongoException e)
+            catch (MongoException)
             {
                 throw new NotImplementedException();
             }
@@ -34,7 +34,31 @@ namespace VietBuddy.Web.Features.Translations
             {
                 return await _collection.Find(c => true).ToListAsync();
             }
-            catch (MongoException e)
+            catch (MongoException)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task UpdateAsync(Translation translation)
+        {
+            try
+            {
+                await _collection.ReplaceOneAsync<Translation>(t => t.Id == translation.Id, translation);
+            }
+            catch (MongoException)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task DeleteAsync(Translation translation)
+        {
+            try
+            {
+                await _collection.DeleteOneAsync<Translation>(t => t.Id == translation.Id);
+            }
+            catch (MongoException)
             {
                 throw new NotImplementedException();
             }
