@@ -33,10 +33,10 @@ else
     
     private async Task ShowEditModal(Translation translation)
     {
-        var editModel = new TranslationEditModel(translation);
+        var clone = translation.Clone();
 
         var parameters = new ModalParameters();
-        parameters.Add("EditModel", editModel);
+        parameters.Add(nameof(Translation), clone);
 
         var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
         var result = await modal.Result;
@@ -44,11 +44,14 @@ else
         if (!result.Cancelled)
         {
             var editResult = (EditResult)result.Data;
-            var indexOf = Translations.IndexOf(translation);
-            Translations.RemoveAt(indexOf);
 
             if (editResult == EditResult.Modified)
-                Translations.Add(editModel.Translation);
+                Translations.ReplaceById(clone);
+
+            if (editResult == EditResult.Deleted)
+                Translations.RemoveAll(x => x.Id == translation.Id);
+
+            StateHasChanged();
         }
     }
 }
