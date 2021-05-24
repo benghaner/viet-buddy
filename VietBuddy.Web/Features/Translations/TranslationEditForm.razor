@@ -10,7 +10,8 @@
 <EditForm EditContext="editContext" OnValidSubmit="Submit">
     <FluentValidationValidator />
 
-    <FormSection HelpText="Word or phrase">
+    <div class="my-4">
+        <h6 class="fw-light">Word or phrase</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
             <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
@@ -19,25 +20,31 @@
             <label for="english" class="input-group-text">EN</label>
             <InputText @bind-Value="Translation.English" class="form-control" id="english" />
         </div>
-    </FormSection>
+    </div>
 
-    <FormSection HelpText="Example sentences">
+    <div class="my-4">
+        <h6 class="fw-light">Example sentences</h6>
         @if (!Translation.Examples.Any()) { AddEmptyExample(); }
         @foreach (var example in Translation.Examples)
         {
-            <div class="input-group mb-3">
+            <div class="input-group mb-2">
                 <InputText @bind-Value="example.Text" class="form-control" />
                 <button type="button"
                     class="btn btn-outline-secondary"
                     @onclick="@(() => Translation.Examples.Remove(example))">
+                    <i class="fal fa-trash-alt me-1"></i>
                     Delete
                 </button>
             </div>
         }
-        <button type="button" class="btn btn-outline-secondary" @onclick="AddEmptyExample">Add another</button>
-    </FormSection>
+        <button type="button" class="btn btn-outline-secondary" @onclick="AddEmptyExample">
+            <i class="fal fa-plus me-1"></i>
+            Add more
+        </button>
+    </div>
 
-    <FormSection HelpText="Additional context. A book, person, etc.">
+    <div class="mb-3">
+        <h6 class="fw-light">Additional context tags</h6>
         <InputText class="form-control"
             list="tagsList"
             id="tags"
@@ -47,7 +54,7 @@
         </datalist>
         @if (Translation.Tags.Any())
         {
-            <div class="mt-3">
+            <div>
                 @foreach (var tag in Translation.Tags)
                 {
                     <p class="d-flex gap-2 align-items-center m-0">
@@ -57,10 +64,12 @@
                 }
             </div>
         }
-    </FormSection>
+    </div>
+
+    <hr class="my-4">
 
     <div class="d-flex gap-1 align-items-center">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary @(isNew ? "w-100" : "")">Submit</button>
         @if (isModal)
         {
             <button type="button" @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
