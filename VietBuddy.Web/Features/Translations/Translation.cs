@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FluentValidation;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using VietBuddy.Web.Shared;
@@ -13,12 +14,26 @@ namespace VietBuddy.Web.Features.Translations
         public string Vietnamese { get; set; }
         public string English { get; set; }
         public List<string> Tags { get; set; }
-        public List<string> Examples { get; set; }
-
+        public List<Example> Examples { get; set; }
+        
         public Translation()
         {
             Tags = new List<string>();
-            Examples = new List<string>();
+            Examples = new List<Example>();
+        }
+    }
+
+    public class Example
+    {
+        public string Text { get; set; }
+    }
+
+    public class TranslationValidator : AbstractValidator<Translation>
+    {
+        public TranslationValidator()
+        {
+            RuleFor(t => t.Vietnamese).NotEmpty();
+            RuleFor(t => t.English).NotEmpty();
         }
     }
 

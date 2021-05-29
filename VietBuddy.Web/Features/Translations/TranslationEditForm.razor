@@ -1,4 +1,5 @@
 @using VietBuddy.Web.Shared.Buttons
+@using Blazored.FluentValidation
 @inject TranslationRepository TranslationRepository
 
 @if (!String.IsNullOrEmpty(HeaderText))
@@ -6,48 +7,53 @@
     <h2>@HeaderText</h2>
 }
 
-<EditForm Model="Translation" OnValidSubmit="Submit">
-    <FormSection HelpText="Add a word or phrase">
+<EditForm EditContext="editContext" OnValidSubmit="Submit">
+    <FluentValidationValidator />
+
+    <div class="my-4">
+        <h6 class="fw-light">Word or phrase</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus required />
+            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="Translation.English" class="form-control" id="english" required />
+            <InputText @bind-Value="Translation.English" class="form-control" id="english" />
         </div>
-    </FormSection>
+    </div>
 
-    <FormSection>
-        <label for="tags" class="form-label text-secondary">Include example sentences</label>
-        <InputText @bind-Value="example" class="form-control" />
-        @if (Translation.Examples.Any())
+    <div class="my-4">
+        <h6 class="fw-light">Example sentences</h6>
+        @if (!Translation.Examples.Any()) { AddEmptyExample(); }
+        @foreach (var example in Translation.Examples)
         {
-            <div class="mt-3">
-                @foreach (var example in Translation.Examples)
-                {
-                    <p class="d-flex gap-2 align-items-center m-0">
-                        <ButtonTrash Clicked="@(() => RemoveExample(example))" />
-                        <span>@example</span>
-                    </p>
-                }
+            <div class="input-group mb-2">
+                <InputText @bind-Value="example.Text" class="form-control" />
+                <button type="button"
+                    class="btn btn-outline-secondary"
+                    aria-label="Delete"
+                    @onclick="@(() => Translation.Examples.Remove(example))">
+                    <i class="fal fa-trash-alt"></i>
+                </button>
             </div>
         }
-    </FormSection>
+        <a role="button" class="link-primary" @onclick="AddEmptyExample">
+            <i class="fal fa-plus">&nbsp;Add more</i>
+        </a>
+    </div>
 
-    <FormSection>
-        <label for="tags" class="form-label text-secondary">Tag a book, person, etc. for context</label>
+    <div class="mb-3">
+        <h6 class="fw-light">Tags</h6>
         <InputText class="form-control"
             list="tagsList"
             id="tags"
-            placeholder="New or existing tag..."
             @bind-Value="tag" />
         <datalist id="tagsList">
             @* <option value="dế mèn phiêu lưu ký" /> *@
         </datalist>
         @if (Translation.Tags.Any())
         {
-            <div class="mt-3">
+            <div>
                 @foreach (var tag in Translation.Tags)
                 {
                     <p class="d-flex gap-2 align-items-center m-0">
@@ -57,13 +63,15 @@
                 }
             </div>
         }
-    </FormSection>
+    </div>
+
+    <hr class="my-3">
 
     <div class="d-flex gap-1 align-items-center">
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary @(isNew ? "w-100" : "")">Submit</button>
         @if (isModal)
         {
-            <button @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
+            <button type="button" @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
         }
         @if (!isNew)
         {
@@ -76,17 +84,6 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation Translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
-    private string _example;
-    public string example
-    {
-        get { return _example; }
-        set
-        {
-            _example = value;
-            Translation.Examples.Add(value);
-            _example = "";
-        }
-    }
     private string _tag;
     private string tag
     {
@@ -100,17 +97,24 @@
     }
     private bool isModal;
     private bool isNew;
+    private EditContext editContext;
 
     protected override void OnInitialized()
     {
         isModal = (ModalInstance != null);
         isNew = (Translation.Id == null);
+        SetupEditContext(Translation);
     }
 
+    private void SetupEditContext(Translation translation)
+    {
+        editContext = new EditContext(translation);
+        editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
+    }
+
+    private void AddEmptyExample() => Translation.Examples.Add(new Example());
     private void RemoveTag(string tag) => Translation.Tags.Remove(tag);
     
-    private void RemoveExample(string example) => Translation.Examples.Remove(example);
-
     private async Task Submit()
     {
         if (isNew)
@@ -127,7 +131,11 @@
             await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Modified));
     }
 
-    private void Reset() => Translation = new Translation();
+    private void Reset()
+    {
+        Translation = new Translation();
+        SetupEditContext(Translation);
+    }
 
     private async Task Delete()
     {
