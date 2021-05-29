@@ -31,20 +31,19 @@
                 <InputText @bind-Value="example.Text" class="form-control" />
                 <button type="button"
                     class="btn btn-outline-secondary"
+                    aria-label="Delete"
                     @onclick="@(() => Translation.Examples.Remove(example))">
-                    <i class="fal fa-trash-alt me-1"></i>
-                    Delete
+                    <i class="fal fa-trash-alt"></i>
                 </button>
             </div>
         }
-        <button type="button" class="btn btn-outline-secondary" @onclick="AddEmptyExample">
-            <i class="fal fa-plus me-1"></i>
-            Add more
-        </button>
+        <a role="button" class="link-primary" @onclick="AddEmptyExample">
+            <i class="fal fa-plus">&nbsp;Add more</i>
+        </a>
     </div>
 
     <div class="mb-3">
-        <h6 class="fw-light">Additional context tags</h6>
+        <h6 class="fw-light">Tags</h6>
         <InputText class="form-control"
             list="tagsList"
             id="tags"
@@ -66,7 +65,7 @@
         }
     </div>
 
-    <hr class="my-4">
+    <hr class="my-3">
 
     <div class="d-flex gap-1 align-items-center">
         <button type="submit" class="btn btn-primary @(isNew ? "w-100" : "")">Submit</button>
