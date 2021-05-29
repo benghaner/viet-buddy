@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace VietBuddy.Web.Features.Translations
+namespace VietBuddy.Shared.Features.Translations
 {
     public class TranslationRepository
     {

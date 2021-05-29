@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using FluentValidation;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using VietBuddy.Web.Shared;
 
-namespace VietBuddy.Web.Features.Translations
+namespace VietBuddy.Shared.Features.Translations
 {
     public class Translation : IJsonClonable
     {
