@@ -15,25 +15,25 @@
         <h6 class="fw-light">Word or phrase</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
+            <InputText @bind-Value="ThisTranslation.Vietnamese" class="form-control" id="vietnamese" autofocus />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="Translation.English" class="form-control" id="english" />
+            <InputText @bind-Value="ThisTranslation.English" class="form-control" id="english" />
         </div>
     </div>
 
     <div class="my-4">
         <h6 class="fw-light">Example sentences</h6>
-        @if (!Translation.Examples.Any()) { AddEmptyExample(); }
-        @foreach (var example in Translation.Examples)
+        @if (!ThisTranslation.Examples.Any()) { AddEmptyExample(); }
+        @foreach (var example in ThisTranslation.Examples)
         {
             <div class="input-group mb-2">
                 <InputText @bind-Value="example.Text" class="form-control" />
                 <button type="button"
                     class="btn btn-outline-secondary"
                     aria-label="Delete"
-                    @onclick="@(() => Translation.Examples.Remove(example))">
+                    @onclick="@(() => ThisTranslation.Examples.Remove(example))">
                     <i class="fal fa-trash-alt"></i>
                 </button>
             </div>
@@ -41,6 +41,28 @@
         <a role="button" class="link-primary" @onclick="AddEmptyExample">
             <i class="fal fa-plus me-1"></i>Add more
         </a>
+    </div>
+
+    <div class="my-4">
+        <h6 class="fw-light">Tags</h6>
+        <BlazoredTypeahead SearchMethod="SearchAvailableTags"
+                   @bind-Values="ThisTranslation.Tags"
+                   EnableDropDown="true"
+                   MinimumLength="2"
+                   AddItemOnEmptyResultMethod="AddNewTag">
+            <SelectedTemplate Context="tag">
+                @tag.Text
+            </SelectedTemplate>
+            <HelpTemplate>
+                Please enter a minimum of 2 characters to perform a search.
+            </HelpTemplate>
+            <NotFoundTemplate Context="searchText">
+                Add "@searchText" as a new tag
+            </NotFoundTemplate>
+            <ResultTemplate Context="tag">
+                @tag.Text
+            </ResultTemplate>
+        </BlazoredTypeahead>
     </div>
 
     <hr class="my-3">
@@ -60,8 +82,9 @@
 
 @code {
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public Translation Translation { get; set; } = new Translation();
+    [Parameter] public Translation ThisTranslation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
+    private List<Tag> availableTags = new List<Tag>();
     private bool isModal;
     private bool isNew;
     private EditContext editContext;
@@ -69,28 +92,51 @@
     protected override void OnInitialized()
     {
         isModal = (ModalInstance != null);
-        isNew = (Translation.Id == null);
-        SetupEditContext(Translation);
+        isNew = (ThisTranslation.Id == null);
+        SetupEditContext();
+
+        availableTags.AddRange(new List<Tag>() {
+            new Tag { Text = "Tag 1" },
+            new Tag { Text = "Tag 2" },
+            new Tag { Text = "Tag 3" },
+            new Tag { Text = "Tag 4" },
+            new Tag { Text = "Tag 5" }
+        });
     }
 
-    private void SetupEditContext(Translation translation)
+    private void SetupEditContext()
     {
-        editContext = new EditContext(translation);
+        editContext = new EditContext(ThisTranslation);
         editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
     }
 
-    private void AddEmptyExample() => Translation.Examples.Add(new Example());
+    private void AddEmptyExample() => ThisTranslation.Examples.Add(new Example());
+
+    private async Task<IEnumerable<Tag>> SearchAvailableTags(string searchText)
+    {
+        var results = availableTags
+            .Where(t => t.Text.ToLower().Contains(searchText.ToLower()))
+            .Except(ThisTranslation.Tags);
+
+        return await Task.FromResult(results.ToList());
+    }
+
+    private Task<Tag> AddNewTag(string text)
+    {
+        var tag = new Tag { Text = text };
+        return Task.FromResult(tag);
+    }
     
     private async Task Submit()
     {
         if (isNew)
         {
-            await TranslationRepository.AddAsync(Translation);
+            await TranslationRepository.AddAsync(ThisTranslation);
             Reset();
         }
         else
         {
-            await TranslationRepository.UpdateAsync(Translation);
+            await TranslationRepository.UpdateAsync(ThisTranslation);
         }
 
         if (isModal)
@@ -99,13 +145,13 @@
 
     private void Reset()
     {
-        Translation = new Translation();
-        SetupEditContext(Translation);
+        ThisTranslation = new Translation();
+        SetupEditContext();
     }
 
     private async Task Delete()
     {
-        await TranslationRepository.DeleteAsync(Translation);
+        await TranslationRepository.DeleteAsync(ThisTranslation);
 
         if (isModal)
             await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Deleted));
