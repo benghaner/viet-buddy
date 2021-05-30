@@ -43,29 +43,6 @@
         </a>
     </div>
 
-    <div class="mb-3">
-        <h6 class="fw-light">Tags</h6>
-        <InputText class="form-control"
-            list="tagsList"
-            id="tags"
-            @bind-Value="tag" />
-        <datalist id="tagsList">
-            @* <option value="dế mèn phiêu lưu ký" /> *@
-        </datalist>
-        @if (Translation.Tags.Any())
-        {
-            <div>
-                @foreach (var tag in Translation.Tags)
-                {
-                    <p class="d-flex gap-2 align-items-center m-0">
-                        <ButtonTrash Clicked="@(() => RemoveTag(tag))" />
-                        <span>@tag</span>
-                    </p>
-                }
-            </div>
-        }
-    </div>
-
     <hr class="my-3">
 
     <div class="d-flex gap-1 align-items-center">
@@ -85,17 +62,6 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation Translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
-    private string _tag;
-    private string tag
-    {
-        get { return _tag; }
-        set
-        {
-            _tag = value;
-            Translation.Tags.Add(value);
-            _tag = "";
-        }
-    }
     private bool isModal;
     private bool isNew;
     private EditContext editContext;
@@ -114,7 +80,6 @@
     }
 
     private void AddEmptyExample() => Translation.Examples.Add(new Example());
-    private void RemoveTag(string tag) => Translation.Tags.Remove(tag);
     
     private async Task Submit()
     {
