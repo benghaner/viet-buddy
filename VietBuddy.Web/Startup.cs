@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
-using VietBuddy.Web.Features.Translations;
+using VietBuddy.Shared.Features.Translations;
 
 namespace VietBuddy.Web
 {

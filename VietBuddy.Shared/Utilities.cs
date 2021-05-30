@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace VietBuddy.Web.Shared
+namespace VietBuddy.Shared
 {
     public interface IJsonClonable {}
     public static class JsonExtensions

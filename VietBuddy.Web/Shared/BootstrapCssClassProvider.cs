@@ -1,15 +1,18 @@
 using System.Linq;
 using Microsoft.AspNetCore.Components.Forms;
 
-public class BootstrapCssClassProvider : FieldCssClassProvider
+namespace VietBuddy.Web.Shared
 {
-    public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
+    public class BootstrapCssClassProvider : FieldCssClassProvider
     {
-        var isValid = !editContext.GetValidationMessages(fieldIdentifier).Any();
- 
-        if (editContext.IsModified(fieldIdentifier))
-            return isValid ? " is-valid" : "is-invalid";
-        
-        return isValid ? "" : "is-invalid";
+        public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
+        {
+            var isValid = !editContext.GetValidationMessages(fieldIdentifier).Any();
+    
+            if (editContext.IsModified(fieldIdentifier))
+                return isValid ? " is-valid" : "is-invalid";
+            
+            return isValid ? "" : "is-invalid";
+        }
     }
 }
