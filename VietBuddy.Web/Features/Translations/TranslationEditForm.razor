@@ -47,9 +47,10 @@
         <h6 class="fw-light">Tags</h6>
         <BlazoredTypeahead SearchMethod="SearchAvailableTags"
                    @bind-Values="ThisTranslation.Tags"
-                   EnableDropDown="true"
+                   EnableDropDown=@availableTags.Any()
                    MinimumLength="2"
-                   AddItemOnEmptyResultMethod="AddNewTag">
+                   AddItemOnEmptyResultMethod="AddNewTag"
+                   placeholder=@(availableTags.Any() ? "Select or add a new tag..." : "Add your first tag...")>
             <SelectedTemplate Context="tag">
                 @tag.Text
             </SelectedTemplate>
@@ -84,7 +85,7 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation ThisTranslation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
-    private List<Tag> availableTags = new List<Tag>();
+    private IEnumerable<Tag> availableTags = new List<Tag>();
     private bool isModal;
     private bool isNew;
     private EditContext editContext;
@@ -94,14 +95,11 @@
         isModal = (ModalInstance != null);
         isNew = (ThisTranslation.Id == null);
         SetupEditContext();
+    }
 
-        availableTags.AddRange(new List<Tag>() {
-            new Tag { Text = "Tag 1" },
-            new Tag { Text = "Tag 2" },
-            new Tag { Text = "Tag 3" },
-            new Tag { Text = "Tag 4" },
-            new Tag { Text = "Tag 5" }
-        });
+    protected override async Task OnInitializedAsync()
+    {
+        availableTags = await TranslationRepository.GetTagsAsync();
     }
 
     private void SetupEditContext()
@@ -132,7 +130,7 @@
         if (isNew)
         {
             await TranslationRepository.AddAsync(ThisTranslation);
-            Reset();
+            await Reset();
         }
         else
         {
@@ -143,9 +141,10 @@
             await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Modified));
     }
 
-    private void Reset()
+    private async Task Reset()
     {
         ThisTranslation = new Translation();
+        availableTags = await TranslationRepository.GetTagsAsync();
         SetupEditContext();
     }
 

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace VietBuddy.Shared.Features.Translations
 {
@@ -22,7 +24,7 @@ namespace VietBuddy.Shared.Features.Translations
             {
                 await _collection.InsertOneAsync(translation);
             }
-            catch (MongoException)
+            catch (Exception)
             {
                 throw new NotImplementedException();
             }
@@ -34,7 +36,7 @@ namespace VietBuddy.Shared.Features.Translations
             {
                 return await _collection.Find(c => true).ToListAsync();
             }
-            catch (MongoException)
+            catch (Exception)
             {
                 throw new NotImplementedException();
             }
@@ -46,7 +48,7 @@ namespace VietBuddy.Shared.Features.Translations
             {
                 await _collection.ReplaceOneAsync<Translation>(t => t.Id == translation.Id, translation);
             }
-            catch (MongoException)
+            catch (Exception)
             {
                 throw new NotImplementedException();
             }
@@ -58,7 +60,26 @@ namespace VietBuddy.Shared.Features.Translations
             {
                 await _collection.DeleteOneAsync<Translation>(t => t.Id == translation.Id);
             }
-            catch (MongoException)
+            catch (Exception)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync()
+        {
+            try
+            {
+                var query = await _collection
+                    .AsQueryable()
+                    .Where(t => t.Tags.Count > 0)
+                    .SelectMany(t => t.Tags)
+                    .Distinct()
+                    .ToListAsync();
+
+                return query.OrderBy(t => t.Text.ToLower());
+            }
+            catch (Exception)
             {
                 throw new NotImplementedException();
             }
