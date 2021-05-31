@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FluentValidation;
 using MongoDB.Bson;
@@ -12,19 +13,31 @@ namespace VietBuddy.Shared.Features.Translations
         public string Id { get; set; }
         public string Vietnamese { get; set; }
         public string English { get; set; }
-        public List<string> Tags { get; set; }
-        public List<Example> Examples { get; set; }
+        public IList<Example> Examples { get; set; }
+        public IList<Tag> Tags { get; set; }
         
         public Translation()
         {
-            Tags = new List<string>();
+            Tags = new List<Tag>();
             Examples = new List<Example>();
         }
     }
 
-    public class Example
+    public class Example { public string Text { get; set; } }
+    
+    public class Tag : IEquatable<Tag>
     {
         public string Text { get; set; }
+
+        public bool Equals(Tag other)
+        {
+            if (other is null)
+                return false;
+            return this.Text == other.Text;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Tag);
+        public override int GetHashCode() => this.Text.GetHashCode();
     }
 
     public class TranslationValidator : AbstractValidator<Translation>

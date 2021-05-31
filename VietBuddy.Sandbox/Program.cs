@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using VietBuddy.Shared.Features.Translations;
 
 namespace VietBuddy.Sandbox
 {
@@ -6,7 +11,7 @@ namespace VietBuddy.Sandbox
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
         }
     }
 }
