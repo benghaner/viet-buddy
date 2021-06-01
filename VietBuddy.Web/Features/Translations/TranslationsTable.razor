@@ -36,7 +36,7 @@ else
         var clone = translation.Clone();
 
         var parameters = new ModalParameters();
-        parameters.Add("ThisTranslation", clone);
+        parameters.Add(nameof(Translation), clone);
 
         var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
         var result = await modal.Result;

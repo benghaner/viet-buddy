@@ -13,18 +13,16 @@ namespace VietBuddy.Shared.Features.Translations
         public string Id { get; set; }
         public string Vietnamese { get; set; }
         public string English { get; set; }
-        public IList<Example> Examples { get; set; }
+        public List<string> Examples { get; set; }
         public IList<Tag> Tags { get; set; }
         
         public Translation()
         {
+            Examples = new List<string>();
             Tags = new List<Tag>();
-            Examples = new List<Example>();
         }
     }
 
-    public class Example { public string Text { get; set; } }
-    
     public class Tag : IEquatable<Tag>
     {
         public string Text { get; set; }
