@@ -66,18 +66,16 @@ namespace VietBuddy.Shared.Features.Translations
             }
         }
 
-        public async Task<IEnumerable<Tag>> GetTagsAsync()
+        public async Task<List<string>> GetTagsAsync()
         {
             try
             {
-                var query = await _collection
+                return await _collection
                     .AsQueryable()
                     .Where(t => t.Tags.Count > 0)
                     .SelectMany(t => t.Tags)
                     .Distinct()
                     .ToListAsync();
-
-                return query.OrderBy(t => t.Text.ToLower());
             }
             catch (Exception)
             {

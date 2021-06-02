@@ -46,13 +46,13 @@
     <div class="my-4">
         <h6 class="fw-light">Tags</h6>
         <BlazoredTypeahead SearchMethod="SearchAvailableTags"
-                   @bind-Values="Translation.Tags"
+                   @bind-Values="selectedTags"
                    EnableDropDown=@availableTags.Any()
                    MinimumLength="2"
                    AddItemOnEmptyResultMethod="AddNewTag"
-                   placeholder=@(availableTags.Any() ? "Select or add a new tag..." : "Add your first tag...")>
+                   placeholder="Search or add a new tag...">
             <SelectedTemplate Context="tag">
-                @tag.Text
+                @tag.Value
             </SelectedTemplate>
             <HelpTemplate>
                 Please enter a minimum of 2 characters to perform a search.
@@ -61,7 +61,7 @@
                 Add "@searchText" as a new tag
             </NotFoundTemplate>
             <ResultTemplate Context="tag">
-                @tag.Text
+                @tag.Value
             </ResultTemplate>
         </BlazoredTypeahead>
     </div>
@@ -85,37 +85,45 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation Translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
-    private IEnumerable<Tag> availableTags = new List<Tag>();
     private bool isModal;
     private bool isNew;
     private EditContext editContext;
     private List<Text> examples = new List<Text>();
+    private List<Text> availableTags = new List<Text>();
+    private IList<Text> selectedTags = new List<Text>();
 
     protected override void OnInitialized()
     {
         isModal = (ModalInstance != null);
         isNew = (Translation.Id == null);
-        PreProcessModel();
         SetupEditContext();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        availableTags = await TranslationRepository.GetTagsAsync();
-    }
+    protected override async Task OnInitializedAsync() => await PreProcessModelAsync();
 
-    private void PreProcessModel()
+    private async Task PreProcessModelAsync()
     {
         examples = new List<Text>();
             
         if (Translation.Examples.Any())
             examples = Translation.Examples.ConvertAll(e => new Text(e));
+
+        selectedTags = new List<Text>();
+
+        if (Translation.Tags.Any())
+            selectedTags = Translation.Tags.ConvertAll(t => new Text(t));
+
+        var tags = await TranslationRepository.GetTagsAsync();
+        availableTags = tags.ConvertAll(e => new Text(e));
     }
 
     private void PostProcessModel()
     {
         if (examples.Any())
             Translation.Examples = examples.ConvertAll(e => e.Value);
+
+        if (selectedTags.Any())
+            Translation.Tags = selectedTags.ToList().ConvertAll(e => e.Value);
     }
 
     private void SetupEditContext()
@@ -124,22 +132,18 @@
         editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
     }
 
-    private void AddEmptyExample() => examples.Add(new Text());
-
-    private async Task<IEnumerable<Tag>> SearchAvailableTags(string searchText)
+    private async Task<IEnumerable<Text>> SearchAvailableTags(string searchText)
     {
         var results = availableTags
-            .Where(t => t.Text.ToLower().Contains(searchText.ToLower()))
-            .Except(Translation.Tags);
+            .Where(t => t.Value.ToLower().Contains(searchText.ToLower()))
+            .Except(selectedTags);
 
         return await Task.FromResult(results.ToList());
     }
 
-    private Task<Tag> AddNewTag(string text)
-    {
-        var tag = new Tag { Text = text };
-        return Task.FromResult(tag);
-    }
+    private void AddEmptyExample() => examples.Add(new Text());
+
+    private Task<Text> AddNewTag(string text) => Task.FromResult(new Text(text));
     
     private async Task Submit()
     {
@@ -162,8 +166,7 @@
     private async Task Reset()
     {
         Translation = new Translation();
-        availableTags = await TranslationRepository.GetTagsAsync();
-        PreProcessModel();
+        await PreProcessModelAsync();
         SetupEditContext();
     }
 
