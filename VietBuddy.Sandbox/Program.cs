@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using VietBuddy.Shared.Features.Translations;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VietBuddy.Sandbox
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            
+            var host = Startup
+                .CreateHostBuilder(args)
+                .Build();
+
+            await host.Services
+                .GetService<MongoService>()
+                .RunAsync();
         }
     }
 }
