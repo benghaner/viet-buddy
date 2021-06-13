@@ -12,7 +12,7 @@ namespace VietBuddy.Sandbox
                 .Build();
 
             await host.Services
-                .GetService<MongoService>()
+                .GetService<Mongo>()
                 .RunAsync();
         }
     }

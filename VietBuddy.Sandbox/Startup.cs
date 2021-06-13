@@ -25,7 +25,7 @@ namespace VietBuddy.Sandbox
                         return new MongoClient(uri);
                     });
                     services.AddTransient<TranslationRepository>();
-                    services.AddTransient<MongoService>();
+                    services.AddTransient<Mongo>();
                 });
         }
     }

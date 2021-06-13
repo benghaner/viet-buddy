@@ -5,12 +5,12 @@ using VietBuddy.Shared.Features.Translations;
 
 namespace VietBuddy.Sandbox
 {
-    public class MongoService
+    public class Mongo
     {
         private readonly IMongoClient _client;
         private readonly TranslationRepository _translations;
 
-        public MongoService(IMongoClient client, TranslationRepository translations)
+        public Mongo(IMongoClient client, TranslationRepository translations)
         {
             _client = client;
             _translations = translations;
@@ -18,7 +18,7 @@ namespace VietBuddy.Sandbox
         
         public async Task RunAsync()
         {
-            await _translations.GetAsync();
+            await Task.Delay(0);
         }
     }
 }
