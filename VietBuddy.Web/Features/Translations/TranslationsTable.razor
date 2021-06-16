@@ -29,22 +29,20 @@
     
     private async Task ShowEditModal(Translation translation)
     {
-        var clone = translation.Clone();
-
         var parameters = new ModalParameters();
-        parameters.Add(nameof(Translation), clone);
+        parameters.Add(nameof(Translation), translation);
 
         var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
         var result = await modal.Result;
 
         if (!result.Cancelled)
         {
-            var editResult = (EditResult)result.Data;
+            var editResult = (EditResult<Translation>)result.Data;
 
-            if (editResult == EditResult.Modified)
-                Translations.ReplaceById(clone);
+            if (editResult.Modified)
+                Translations.ReplaceById(editResult.TItem);
 
-            if (editResult == EditResult.Deleted)
+            if (editResult.Deleted)
                 Translations.RemoveAll(x => x.Id == translation.Id);
 
             StateHasChanged();

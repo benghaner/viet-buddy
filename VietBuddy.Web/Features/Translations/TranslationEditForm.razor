@@ -15,11 +15,11 @@
         <h6 class="fw-light">Word or phrase</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
+            <InputText @bind-Value="translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="Translation.English" class="form-control" id="english" />
+            <InputText @bind-Value="translation.English" class="form-control" id="english" />
         </div>
     </div>
 
@@ -85,6 +85,7 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation Translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
+    private Translation translation;
     private bool isModal;
     private bool isNew;
     private EditContext editContext;
@@ -95,7 +96,8 @@
     protected override void OnInitialized()
     {
         isModal = (ModalInstance != null);
-        isNew = (Translation.Id == null);
+        isNew = String.IsNullOrEmpty(Translation.Id);
+        translation = isNew ? Translation : Translation.Clone();
         SetupEditContext();
     }
 
@@ -105,13 +107,13 @@
     {
         examples = new List<Text>();
             
-        if (Translation.Examples.Any())
-            examples = Translation.Examples.ConvertAll(e => new Text(e));
+        if (translation.Examples.Any())
+            examples = translation.Examples.ConvertAll(e => new Text(e));
 
         selectedTags = new List<Text>();
 
-        if (Translation.Tags.Any())
-            selectedTags = Translation.Tags.ConvertAll(t => new Text(t));
+        if (translation.Tags.Any())
+            selectedTags = translation.Tags.ConvertAll(t => new Text(t));
 
         var tags = await TranslationRepository.GetTagsAsync();
         availableTags = tags.ConvertAll(e => new Text(e));
@@ -120,15 +122,15 @@
     private void PostProcessModel()
     {
         if (examples.Any())
-            Translation.Examples = examples.ConvertAll(e => e.Value);
+            translation.Examples = examples.ConvertAll(e => e.Value);
 
         if (selectedTags.Any())
-            Translation.Tags = selectedTags.ToList().ConvertAll(e => e.Value);
+            translation.Tags = selectedTags.ToList().ConvertAll(e => e.Value);
     }
 
     private void SetupEditContext()
     {
-        editContext = new EditContext(Translation);
+        editContext = new EditContext(translation);
         editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
     }
 
@@ -151,30 +153,36 @@
 
         if (isNew)
         {
-            await TranslationRepository.AddAsync(Translation);
+            await TranslationRepository.AddAsync(translation);
             await Reset();
         }
         else
         {
-            await TranslationRepository.UpdateAsync(Translation);
+            await TranslationRepository.UpdateAsync(translation);
         }
 
         if (isModal)
-            await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Modified));
+        {
+            var editResult = new EditResult<Translation>(translation, EditAction.Modified);
+            await ModalInstance.CloseAsync(ModalResult.Ok(editResult));
+        }
     }
 
     private async Task Reset()
     {
-        Translation = new Translation();
+        translation = new Translation();
         await PreProcessModelAsync();
         SetupEditContext();
     }
 
     private async Task Delete()
     {
-        await TranslationRepository.DeleteAsync(Translation);
+        await TranslationRepository.DeleteAsync(translation);
 
         if (isModal)
-            await ModalInstance.CloseAsync(ModalResult.Ok<EditResult>(EditResult.Deleted));
+        {
+            var editResult = new EditResult<Translation>(translation, EditAction.Deleted);
+            await ModalInstance.CloseAsync(ModalResult.Ok(editResult));
+        }
     }
 }
