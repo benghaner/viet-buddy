@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MongoDB.Driver;
-using VietBuddy.Shared.Features.Translations;
+using VietBuddy.Web.Data;
 
 namespace VietBuddy.Web
 {
@@ -30,12 +29,7 @@ namespace VietBuddy.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<IMongoClient, MongoClient>(m =>
-            {
-                var uri = Configuration.GetConnectionString("MongoUri");
-                return new MongoClient(uri);
-            });
-            services.AddSingleton<TranslationRepository>();
+            services.AddMongoDb();
             services.AddBlazoredModal();
         }
 

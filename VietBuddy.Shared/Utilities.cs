@@ -1,8 +1,10 @@
+using System;
 using System.Text.Json;
 
 namespace VietBuddy.Shared
 {
     public interface IJsonClonable {}
+    
     public static class JsonExtensions
     {
         public static T Clone<T>(this T original) where T : IJsonClonable
@@ -10,5 +12,23 @@ namespace VietBuddy.Shared
             string json = JsonSerializer.Serialize<T>(original);
             return JsonSerializer.Deserialize<T>(json);
         }
+    }
+
+    public class Text : IEquatable<Text>
+    {
+        public string Value { get; set; }
+
+        public Text() {}
+        public Text(string value) => this.Value = value;
+
+        public bool Equals(Text other)
+        {
+            if (other is null)
+                return false;
+            return this.Value == other.Value;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Text);
+        public override int GetHashCode() => this.Value.GetHashCode();
     }
 }

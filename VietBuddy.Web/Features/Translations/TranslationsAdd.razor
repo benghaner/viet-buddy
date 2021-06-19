@@ -1,0 +1,10 @@
+<TranslationEditForm 
+    Translation="translation" 
+    HeaderText="Add a translation" 
+    OnAdded="OnTranslationAdded" />
+
+@code {
+    private Translation translation = new Translation();
+    
+    private void OnTranslationAdded() => translation = new Translation();
+}
