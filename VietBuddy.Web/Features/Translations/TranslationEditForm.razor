@@ -15,11 +15,11 @@
         <h6 class="fw-light">Word or phrase</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text">VN</label>
-            <InputText @bind-Value="translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
+            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text">EN</label>
-            <InputText @bind-Value="translation.English" class="form-control" id="english" />
+            <InputText @bind-Value="Translation.English" class="form-control" id="english" />
         </div>
     </div>
 
@@ -85,7 +85,7 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Translation Translation { get; set; } = new Translation();
     [Parameter] public string HeaderText { get; set; }
-    private Translation translation;
+    [Parameter] public EventCallback<Translation> OnAdded { get; set; }
     private bool isModal;
     private bool isNew;
     private EditContext editContext;
@@ -93,45 +93,36 @@
     private List<Text> availableTags = new List<Text>();
     private IList<Text> selectedTags = new List<Text>();
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet() => Initialize();
+
+    protected override async Task OnParametersSetAsync() => await InitializeTagsAsync();
+
+    private void Initialize()
     {
         isModal = (ModalInstance != null);
         isNew = String.IsNullOrEmpty(Translation.Id);
-        translation = isNew ? Translation : Translation.Clone();
-        SetupEditContext();
-    }
 
-    protected override async Task OnInitializedAsync() => await PreProcessModelAsync();
+        if (!isNew)
+            Translation = Translation.Clone();
 
-    private async Task PreProcessModelAsync()
-    {
         examples = new List<Text>();
-            
-        if (translation.Examples.Any())
-            examples = translation.Examples.ConvertAll(e => new Text(e));
+        if (Translation.Examples.Any())
+            examples = Translation.Examples.ConvertAll(e => new Text(e));
 
         selectedTags = new List<Text>();
+        if (Translation.Tags.Any())
+            selectedTags = Translation.Tags.ConvertAll(t => new Text(t));
 
-        if (translation.Tags.Any())
-            selectedTags = translation.Tags.ConvertAll(t => new Text(t));
+        editContext = new EditContext(Translation);
+        editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
+    }
 
+    private void AddEmptyExample() => examples.Add(new Text());
+
+    private async Task InitializeTagsAsync()
+    {
         var tags = await TranslationRepository.GetTagsAsync();
         availableTags = tags.ConvertAll(e => new Text(e));
-    }
-
-    private void PostProcessModel()
-    {
-        if (examples.Any())
-            translation.Examples = examples.ConvertAll(e => e.Value);
-
-        if (selectedTags.Any())
-            translation.Tags = selectedTags.ToList().ConvertAll(e => e.Value);
-    }
-
-    private void SetupEditContext()
-    {
-        editContext = new EditContext(translation);
-        editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
     }
 
     private async Task<IEnumerable<Text>> SearchAvailableTags(string searchText)
@@ -143,46 +134,46 @@
         return await Task.FromResult(results.ToList());
     }
 
-    private void AddEmptyExample() => examples.Add(new Text());
-
     private Task<Text> AddNewTag(string text) => Task.FromResult(new Text(text));
     
     private async Task Submit()
     {
-        PostProcessModel();
+        PostProcess();
 
         if (isNew)
         {
-            await TranslationRepository.AddAsync(translation);
-            await Reset();
+            await TranslationRepository.AddAsync(Translation);
+            await OnAdded.InvokeAsync(Translation);
         }
         else
         {
-            await TranslationRepository.UpdateAsync(translation);
+            await TranslationRepository.UpdateAsync(Translation);
         }
 
         if (isModal)
         {
-            var editResult = new EditResult<Translation>(translation, EditAction.Modified);
+            var editResult = new EditResult<Translation>(Translation, EditAction.Modified);
             await ModalInstance.CloseAsync(ModalResult.Ok(editResult));
         }
-    }
-
-    private async Task Reset()
-    {
-        translation = new Translation();
-        await PreProcessModelAsync();
-        SetupEditContext();
     }
 
     private async Task Delete()
     {
-        await TranslationRepository.DeleteAsync(translation);
+        await TranslationRepository.DeleteAsync(Translation);
 
         if (isModal)
         {
-            var editResult = new EditResult<Translation>(translation, EditAction.Deleted);
+            var editResult = new EditResult<Translation>(Translation, EditAction.Deleted);
             await ModalInstance.CloseAsync(ModalResult.Ok(editResult));
         }
+    }
+
+    private void PostProcess()
+    {
+        if (examples.Any())
+            Translation.Examples = examples.ConvertAll(e => e.Value);
+
+        if (selectedTags.Any())
+            Translation.Tags = selectedTags.ToList().ConvertAll(e => e.Value);
     }
 }
