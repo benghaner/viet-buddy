@@ -44,4 +44,15 @@ namespace VietBuddy.Shared
                 .ToList();
         }
     }
+
+    public static class StringExtensions
+    {
+        public static List<Text> ToListText(this List<string> list)
+        {
+            return list
+                .Where(e => !String.IsNullOrEmpty(e))
+                .Select(e => new Text(e))
+                .ToList();
+        }
+    }
 }
