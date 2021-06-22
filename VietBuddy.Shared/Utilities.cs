@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 namespace VietBuddy.Shared
@@ -30,5 +32,16 @@ namespace VietBuddy.Shared
 
         public override bool Equals(object obj) => Equals(obj as Text);
         public override int GetHashCode() => this.Value.GetHashCode();
+    }
+
+    public static class TextExtensions
+    {
+        public static List<string> ToListString(this IList<Text> list)
+        {
+            return list
+                .Where(e => !String.IsNullOrEmpty(e.Value))
+                .Select(e => e.Value)
+                .ToList();
+        }
     }
 }
