@@ -170,15 +170,14 @@
 
     private void PostProcess()
     {
-        if (examples.Any())
-            Translation.Examples = examples
-                .Where(e => !String.IsNullOrEmpty(e.Value))
-                .Select(e => e.Value)
-                .ToList();
+        Translation.Examples = examples
+            .Where(e => !String.IsNullOrEmpty(e.Value))
+            .Select(e => e.Value)
+            .ToList();
 
-        if (selectedTags.Any())
-            Translation.Tags = selectedTags
-                .Select(e => e.Value)
-                .ToList();
+        Translation.Tags = selectedTags
+            .Where(e => !String.IsNullOrEmpty(e.Value))
+            .Select(e => e.Value)
+            .ToList();
     }
 }
