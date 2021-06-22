@@ -2,10 +2,6 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.blazored-modal-header {
-    padding: 0;
-}
-
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -18,9 +14,19 @@ html, body {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.blazored-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+    overflow: auto;
+}
+
+.blazored-modal-header {
+    padding: 0;
+}
