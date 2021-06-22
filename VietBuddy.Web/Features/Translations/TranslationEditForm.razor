@@ -171,9 +171,14 @@
     private void PostProcess()
     {
         if (examples.Any())
-            Translation.Examples = examples.ConvertAll(e => e.Value);
+            Translation.Examples = examples
+                .Where(e => !String.IsNullOrEmpty(e.Value))
+                .Select(e => e.Value)
+                .ToList();
 
         if (selectedTags.Any())
-            Translation.Tags = selectedTags.ToList().ConvertAll(e => e.Value);
+            Translation.Tags = selectedTags
+                .Select(e => e.Value)
+                .ToList();
     }
 }
