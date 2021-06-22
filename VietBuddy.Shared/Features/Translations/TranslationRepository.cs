@@ -72,9 +72,10 @@ namespace VietBuddy.Shared.Features.Translations
             {
                 return await _collection
                     .AsQueryable()
-                    .Where(t => t.Tags.Count > 0)
+                    .Where(t => t.Tags.Any())
                     .SelectMany(t => t.Tags)
                     .Distinct()
+                    .OrderBy(t => t)
                     .ToListAsync();
             }
             catch (Exception)
