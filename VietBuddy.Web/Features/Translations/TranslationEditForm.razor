@@ -105,13 +105,8 @@
         if (!isNew)
             Translation = Translation.Clone();
 
-        examples = new List<Text>();
-        if (Translation.Examples.Any())
-            examples = Translation.Examples.ConvertAll(e => new Text(e));
-
-        selectedTags = new List<Text>();
-        if (Translation.Tags.Any())
-            selectedTags = Translation.Tags.ConvertAll(t => new Text(t));
+        examples = Translation.Examples.ToListText();
+        selectedTags = Translation.Tags.ToListText();
 
         editContext = new EditContext(Translation);
         editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
@@ -122,7 +117,7 @@
     private async Task InitializeTagsAsync()
     {
         var tags = await TranslationRepository.GetTagsAsync();
-        availableTags = tags.ConvertAll(e => new Text(e));
+        availableTags = tags.ToListText();
     }
 
     private async Task<IEnumerable<Text>> SearchAvailableTags(string searchText)
@@ -170,15 +165,7 @@
 
     private void PostProcess()
     {
-        if (examples.Any())
-            Translation.Examples = examples
-                .Where(e => !String.IsNullOrEmpty(e.Value))
-                .Select(e => e.Value)
-                .ToList();
-
-        if (selectedTags.Any())
-            Translation.Tags = selectedTags
-                .Select(e => e.Value)
-                .ToList();
+        Translation.Examples = examples.ToListString();
+        Translation.Tags = selectedTags.ToListString();
     }
 }
