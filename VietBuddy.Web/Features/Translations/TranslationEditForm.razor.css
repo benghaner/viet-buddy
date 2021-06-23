@@ -9,3 +9,19 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.flag {
+    background-size: cover;
+    color: transparent;
+    width: 3rem;
+}
+
+.flag-vietnam {
+    background-image: url('/img/flag-vietnam.svg');
+    background-position: center;
+}
+
+.flag-usa {
+    background-image: url('/img/flag-usa.svg');
+    background-position: 25%;
+}
