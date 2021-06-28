@@ -2,9 +2,9 @@
 @inject TranslationRepository TranslationRepository
 
 <header>
-    <h2>Translations</h2>
+    <h2>Bản dịch</h2>
 </header>
-<TranslationsTable Translations="translations"></TranslationsTable>
+<TranslationsList Translations="translations"></TranslationsList>
 
 @code {
     private List<Translation> translations = new List<Translation>();
