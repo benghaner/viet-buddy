@@ -16,10 +16,16 @@
         if (!String.IsNullOrEmpty(SearchTerm))
         {
             translations = await Repository
-                .FindAsync(t => t.Vietnamese.ToLower().Contains(SearchTerm.ToLower())
-                || t.English.ToLower().Contains(SearchTerm.ToLower()));
+                .FindAllAsync(t =>
+                    t.Vietnamese
+                        .ToLower()
+                        .Contains(SearchTerm.ToLower()) ||
+                    t.English
+                        .ToLower()
+                        .Contains(SearchTerm.ToLower()),
+                t => t.Vietnamese);
         }
         else
-            translations = await Repository.GetAllAsync();
+            translations = await Repository.FindAllAsync(t => true, t => t.Updated, false);
     }
 }
