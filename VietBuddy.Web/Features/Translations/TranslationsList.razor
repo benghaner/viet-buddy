@@ -6,11 +6,11 @@
         {
             i++;
             <div class="accordion-item">
-                <h3 class="accordion-header" id="flush-heading-@i">
+                <div class="accordion-header" id="flush-heading-@i">
                     <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@i" aria-expanded="false" aria-controls="flush-collapse-@i">
-                        <span class="fs-5 fw-light">@translation.Vietnamese</span>
+                        @translation.Vietnamese
                     </button>
-                </h3>
+                </div>
                 <div id="flush-collapse-@i" class="accordion-collapse collapse" aria-labelledby="flush-heading-@i" data-bs-parent="#accordionFlushExample">
                     <div class="accordion-body d-flex flex-column gap-2">
                         <div>
@@ -38,7 +38,7 @@
                             </div>
                         }
                         <div class="text-end">
-                            <a href="" class="link-primary text-decoration-none fs-5 fw-light" 
+                            <a href="" class="link-primary text-decoration-none" 
                                 @onclick="@(() => ShowEditModal(translation))" 
                                 @onclick:preventDefault="true">
                                 Sửa bản dịch<i class="fal fa-edit ms-2"></i>

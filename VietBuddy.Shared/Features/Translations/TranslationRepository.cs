@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -10,6 +11,7 @@ namespace VietBuddy.Shared.Features.Translations
     public class TranslationRepository
     {
         private readonly IMongoCollection<Translation> _collection;
+        private const int DefaultLimitPerPage = 20;
 
         public TranslationRepository(IMongoClient mongoClient)
         {
@@ -30,11 +32,28 @@ namespace VietBuddy.Shared.Features.Translations
             }
         }
 
-        public async Task<List<Translation>> GetAsync()
+        public async Task<List<Translation>> GetAllAsync()
         {
             try
             {
                 return await _collection.Find(c => true).ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task<List<Translation>> FindAsync(
+            Expression<Func<Translation, bool>> filter,
+            int limit = DefaultLimitPerPage)
+        {
+            try
+            {
+                return await _collection
+                    .Find(filter)
+                    .Limit(limit)
+                    .ToListAsync();
             }
             catch (Exception)
             {

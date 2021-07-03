@@ -1,16 +1,25 @@
-@page "/translations"
-@inject TranslationRepository TranslationRepository
+@page "/translations/{SearchTerm?}"
+@inject TranslationRepository Repository
 
 <header>
     <h2>Bản dịch</h2>
 </header>
+<TranslationsSearch />
 <TranslationsList Translations="translations"></TranslationsList>
 
 @code {
+    [Parameter] public string SearchTerm { get; set; }
     private List<Translation> translations = new List<Translation>();
         
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        translations = await TranslationRepository.GetAsync();
+        if (!String.IsNullOrEmpty(SearchTerm))
+        {
+            translations = await Repository
+                .FindAsync(t => t.Vietnamese.ToLower().Contains(SearchTerm.ToLower())
+                || t.English.ToLower().Contains(SearchTerm.ToLower()));
+        }
+        else
+            translations = await Repository.GetAllAsync();
     }
 }
