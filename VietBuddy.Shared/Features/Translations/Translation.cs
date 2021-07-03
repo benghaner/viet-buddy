@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FluentValidation;
 using MongoDB.Bson;
@@ -14,6 +15,8 @@ namespace VietBuddy.Shared.Features.Translations
         public string English { get; set; }
         public List<string> Examples { get; set; }
         public List<string> Tags { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
         
         public Translation()
         {

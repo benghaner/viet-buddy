@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -10,6 +11,7 @@ namespace VietBuddy.Shared.Features.Translations
     public class TranslationRepository
     {
         private readonly IMongoCollection<Translation> _collection;
+        private const int DefaultLimit = 20;
 
         public TranslationRepository(IMongoClient mongoClient)
         {
@@ -22,6 +24,8 @@ namespace VietBuddy.Shared.Features.Translations
         {
             try
             {
+                translation.Created = DateTime.Now;
+                translation.Updated = DateTime.Now;
                 await _collection.InsertOneAsync(translation);
             }
             catch (Exception)
@@ -30,11 +34,40 @@ namespace VietBuddy.Shared.Features.Translations
             }
         }
 
-        public async Task<List<Translation>> GetAsync()
+        public async Task<Translation> FindAsync(Expression<Func<Translation, bool>> filter)
         {
             try
             {
-                return await _collection.Find(c => true).ToListAsync();
+                return await _collection
+                    .Find(filter)
+                    .SingleOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                throw new NotImplementedException();
+            }
+        }
+        
+        public async Task<List<Translation>> FindAllAsync(
+            Expression<Func<Translation, bool>> filter,
+            Expression<Func<Translation, object>> sortKey,
+            bool ascending = true,
+            int limit = DefaultLimit)
+        {
+            SortDefinition<Translation> sort;
+
+            if (ascending == true)
+                sort = Builders<Translation>.Sort.Ascending(sortKey);
+            else
+                sort = Builders<Translation>.Sort.Descending(sortKey);
+
+            try
+            {
+                return await _collection
+                    .Find(filter)
+                    .Sort(sort)
+                    .Limit(limit)
+                    .ToListAsync();
             }
             catch (Exception)
             {
@@ -46,6 +79,10 @@ namespace VietBuddy.Shared.Features.Translations
         {
             try
             {
+                var original = await FindAsync(t => t.Id == translation.Id);
+                translation.Created = original.Created;
+                translation.Updated = DateTime.Now;
+
                 await _collection.ReplaceOneAsync<Translation>(t => t.Id == translation.Id, translation);
             }
             catch (Exception)

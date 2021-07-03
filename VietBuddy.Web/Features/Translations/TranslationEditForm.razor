@@ -1,4 +1,3 @@
-@using VietBuddy.Web.Shared.Buttons
 @using Blazored.FluentValidation
 @using Blazored.Typeahead
 @inject TranslationRepository TranslationRepository
@@ -12,7 +11,7 @@
     <FluentValidationValidator />
 
     <div class="my-4">
-        <h6 class="fw-light">Word or phrase</h6>
+        <h6 class="fw-light">Từ hay cụm từ</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text flag flag-vietnam">VN</label>
             <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
@@ -24,7 +23,7 @@
     </div>
 
     <div class="my-4">
-        <h6 class="fw-light">Example sentences</h6>
+        <h6 class="fw-light">Câu ví dụ</h6>
         @if (!examples.Any()) { AddEmptyExample(); }
         @foreach (var example in examples)
         {
@@ -39,7 +38,7 @@
             </div>
         }
         <a role="button" class="link-primary" @onclick="AddEmptyExample">
-            <i class="fal fa-plus me-1"></i>Add more
+            <i class="fal fa-plus me-1"></i>Thêm nữa
         </a>
     </div>
 
@@ -50,15 +49,15 @@
                    EnableDropDown=@availableTags.Any()
                    MinimumLength="2"
                    AddItemOnEmptyResultMethod="AddNewTag"
-                   placeholder="Search or add a new tag...">
+                   placeholder="Tìm hoặc thêm tag mới...">
             <SelectedTemplate Context="tag">
                 @tag.Value
             </SelectedTemplate>
             <HelpTemplate>
-                Please enter a minimum of 2 characters to perform a search.
+                Điền ít nhất 2 chữ để tìm
             </HelpTemplate>
             <NotFoundTemplate Context="searchText">
-                Add "@searchText" as a new tag
+                Thêm "@searchText" như là tag mới
             </NotFoundTemplate>
             <ResultTemplate Context="tag">
                 @tag.Value
@@ -69,7 +68,7 @@
     <hr class="my-3">
 
     <div class="d-flex gap-1 align-items-center">
-        <button type="submit" class="btn btn-primary @(isNew ? "w-100" : "")">Submit</button>
+        <button type="submit" class="btn btn-primary @(isNew ? "w-100" : "")">Thêm</button>
         @if (isModal)
         {
             <button type="button" @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Cancel</button>
