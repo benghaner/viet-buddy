@@ -33,14 +33,4 @@ namespace VietBuddy.Shared.Features.Translations
             RuleFor(t => t.English).NotEmpty();
         }
     }
-
-    public static class TranslationExtenions
-    {
-        public static List<Translation> ReplaceById(this List<Translation> translations, Translation translation)
-        {
-            translations.RemoveAll(t => t.Id == translation.Id);
-            translations.Add(translation);
-            return translations;
-        }
-    }
 }

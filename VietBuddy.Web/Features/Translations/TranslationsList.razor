@@ -5,75 +5,11 @@
         @foreach (var translation in Translations)
         {
             i++;
-            <div class="accordion-item">
-                <div class="accordion-header" id="flush-heading-@i">
-                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@i" aria-expanded="false" aria-controls="flush-collapse-@i">
-                        @translation.Vietnamese
-                    </button>
-                </div>
-                <div id="flush-collapse-@i" class="accordion-collapse collapse" aria-labelledby="flush-heading-@i" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body d-flex flex-column gap-2">
-                        <div>
-                            <span class="text-muted fw-light">@translation.English</span>
-                        </div>
-                        @if (translation.Examples.Any(e => !String.IsNullOrEmpty(e)))
-                        {
-                            <ul class="fa-ul my-2">
-                                @foreach (var example in translation.Examples)
-                                {
-                                    <li>
-                                        <span class="fa-li"><i class="fad fa-quote-left"></i></span>
-                                        @example
-                                    </li>
-                                }
-                            </ul>
-                        }
-                        @if (translation.Tags.Any(t => !String.IsNullOrEmpty(t)))
-                        {
-                            <div class="d-flex align-items-center border-top border-bottom border-light border-2 py-2">
-                                @foreach (var tag in translation.Tags)
-                                {
-                                    <span class="badge bg-light text-secondary text-lowercase me-1">@tag</span>
-                                }
-                            </div>
-                        }
-                        <div class="text-end">
-                            <a href="" class="link-primary text-decoration-none" 
-                                @onclick="@(() => ShowEditModal(translation))" 
-                                @onclick:preventDefault="true">
-                                Sửa bản dịch<i class="fal fa-edit ms-2"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <TranslationsListItem Translation="translation" Id="@i" />
         }
     </div>
 }
 
 @code {
-    [CascadingParameter] public IModalService Modal { get; set; }
     [Parameter] public List<Translation> Translations { get; set; }
-    
-    private async Task ShowEditModal(Translation translation)
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(Translation), translation);
-
-        var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
-        var result = await modal.Result;
-
-        if (!result.Cancelled)
-        {
-            var editResult = (EditResult<Translation>)result.Data;
-
-            if (editResult.Modified)
-                Translations.ReplaceById(editResult.TItem);
-
-            if (editResult.Deleted)
-                Translations.RemoveAll(x => x.Id == translation.Id);
-
-            StateHasChanged();
-        }
-    }
 }
