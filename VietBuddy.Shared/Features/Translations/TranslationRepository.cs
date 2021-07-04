@@ -11,7 +11,7 @@ namespace VietBuddy.Shared.Features.Translations
     public class TranslationRepository
     {
         private readonly IMongoCollection<Translation> _collection;
-        private const int DefaultLimit = 20;
+        private const int DefaultLimit = 100;
 
         public TranslationRepository(IMongoClient mongoClient)
         {
