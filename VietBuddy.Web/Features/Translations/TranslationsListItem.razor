@@ -54,7 +54,7 @@
         var parameters = new ModalParameters();
         parameters.Add(nameof(Translation), Translation);
 
-        var modal = Modal.Show<TranslationEditForm>("Edit Translation", parameters);
+        var modal = Modal.Show<TranslationEditForm>("Sữa bản dịch", parameters);
         var result = await modal.Result;
 
         if (!result.Cancelled)
