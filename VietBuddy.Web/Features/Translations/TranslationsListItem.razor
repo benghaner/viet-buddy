@@ -1,0 +1,71 @@
+@if (Translation != null)
+{
+    <div class="accordion-item">
+        <div class="accordion-header" id="flush-heading-@Id">
+            <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-@Id" aria-expanded="false" aria-controls="flush-collapse-@Id">
+                @Translation.Vietnamese
+            </button>
+        </div>
+        <div id="flush-collapse-@Id" class="accordion-collapse collapse" aria-labelledby="flush-heading-@Id" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body d-flex flex-column gap-2">
+                <div>
+                    <span class="text-muted fw-light">@Translation.English</span>
+                </div>
+                @if (Translation.Examples.Any(e => !String.IsNullOrEmpty(e)))
+                {
+                    <ul class="fa-ul my-2">
+                        @foreach (var example in Translation.Examples)
+                        {
+                            <li>
+                                <span class="fa-li"><i class="fad fa-quote-left"></i></span>
+                                @example
+                            </li>
+                        }
+                    </ul>
+                }
+                @if (Translation.Tags.Any(t => !String.IsNullOrEmpty(t)))
+                {
+                    <div class="d-flex align-items-center border-top border-bottom border-light border-2 py-2">
+                        @foreach (var tag in Translation.Tags)
+                        {
+                            <span class="badge bg-light text-secondary text-lowercase me-1">@tag</span>
+                        }
+                    </div>
+                }
+                <div class="text-end">
+                    <a href="" class="link-primary text-decoration-none" 
+                        @onclick="ShowEditModal" 
+                        @onclick:preventDefault="true">
+                        Sửa bản dịch<i class="fal fa-edit ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+    [Parameter] public Translation Translation { get; set; }
+    [Parameter] public int Id { get; set; }
+
+    private async Task ShowEditModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(Translation), Translation);
+
+        var modal = Modal.Show<TranslationEditForm>("Sữa bản dịch", parameters);
+        var result = await modal.Result;
+
+        if (!result.Cancelled)
+        {
+            var editResult = (EditResult<Translation>)result.Data;
+
+            if (editResult.Modified)
+                Translation = editResult.TItem;
+
+            if (editResult.Deleted)
+                Translation = null;
+        }
+    }
+}
