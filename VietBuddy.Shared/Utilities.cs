@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace VietBuddy.Shared
 {
@@ -54,16 +53,6 @@ namespace VietBuddy.Shared
                 .Where(e => !String.IsNullOrEmpty(e))
                 .Select(e => new Text(e))
                 .ToList();
-        }
-
-        public static string Highlight(this string input, string highlight)
-        {
-            var matches = Regex.Matches(input, highlight, RegexOptions.IgnoreCase);
-
-            foreach (var match in matches)
-                input = input.Replace(match.ToString(), $"<mark>{match}</mark>");
-
-            return input;
         }
     }
 }
