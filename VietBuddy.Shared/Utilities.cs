@@ -54,5 +54,10 @@ namespace VietBuddy.Shared
                 .Select(e => new Text(e))
                 .ToList();
         }
+
+        public static string RemovePunctuation(this string input)
+        {
+            return new string(input.Where(c => !char.IsPunctuation(c)).ToArray());
+        }
     }
 }
