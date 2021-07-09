@@ -3,7 +3,7 @@ html, body {
 }
 
 mark {
-    background: linear-gradient(to bottom, transparent 60%, #ffe69c 60%);
+    background: linear-gradient(to bottom, transparent 80%, #ffe69c 80%);
 }
 
 #blazor-error-ui {
