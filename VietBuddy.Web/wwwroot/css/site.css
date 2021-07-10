@@ -2,6 +2,10 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+mark {
+    background: linear-gradient(to bottom, transparent 80%, var(--bs-yellow) 80%);
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

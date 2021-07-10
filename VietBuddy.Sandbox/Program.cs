@@ -7,6 +7,8 @@ namespace VietBuddy.Sandbox
     {
         public static async Task Main(string[] args)
         {
+            await Task.Delay(0);
+
             var host = Startup
                 .CreateHostBuilder(args)
                 .Build();
