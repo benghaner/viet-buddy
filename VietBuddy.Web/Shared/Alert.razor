@@ -1,0 +1,21 @@
+@if (!String.IsNullOrEmpty(Icon))
+{
+    <div class="alert alert-@Color d-flex align-items-center gap-2" role="alert">
+        <i class=@Icon></i>
+        <div class="text-truncate">
+            @ChildContent
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-@Color text-truncate" role="alert">
+        @ChildContent
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Color { get; set; } = "primary";
+    [Parameter] public string Icon { get; set; }
+}
