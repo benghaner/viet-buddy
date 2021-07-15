@@ -1,5 +1,6 @@
 @using Blazored.FluentValidation
 @using Blazored.Typeahead
+@using System.Text.RegularExpressions
 @inject TranslationRepository Repository
 @inject NavigationManager Navigation
 
@@ -156,7 +157,7 @@
         if (isNew)
         {
             vietExists = await Repository
-                .ExistsAsync(t => t.Vietnamese.ToLower() == Translation.Vietnamese.ToLower());
+                .ExistsAsync(t => Regex.IsMatch(t.Vietnamese, RegexPatterns.WholeWord(Translation.Vietnamese), RegexOptions.IgnoreCase));
         }
     }
     

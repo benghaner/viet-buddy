@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace VietBuddy.Shared
 {
@@ -59,5 +60,10 @@ namespace VietBuddy.Shared
         {
             return new string(input.Where(c => !char.IsPunctuation(c)).ToArray());
         }
+    }
+
+    public static class RegexPatterns
+    {
+        public static string WholeWord(string word) => @"(?<!\w)" + word + @"(?!\w)";
     }
 }
