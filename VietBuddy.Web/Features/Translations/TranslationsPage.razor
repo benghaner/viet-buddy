@@ -1,4 +1,5 @@
 @page "/translations/{SearchTerm?}"
+@using System.Text.RegularExpressions
 @inject TranslationRepository Repository
 
 <header>
@@ -16,14 +17,7 @@
         if (!String.IsNullOrEmpty(SearchTerm))
         {
             translations = await Repository
-                .FindAllAsync(t =>
-                    t.Vietnamese
-                        .ToLower()
-                        .Contains(SearchTerm.ToLower()) ||
-                    t.English
-                        .ToLower()
-                        .Contains(SearchTerm.ToLower()),
-                t => t.Vietnamese);
+                .FindAllAsync(t => Regex.IsMatch(t.Vietnamese, RegexPatterns.WholeWord(SearchTerm), RegexOptions.IgnoreCase), t => t.Vietnamese);
         }
         else
             translations = await Repository.FindAllAsync(t => true, t => t.Updated, false);

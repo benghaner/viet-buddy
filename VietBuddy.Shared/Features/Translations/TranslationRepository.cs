@@ -40,7 +40,7 @@ namespace VietBuddy.Shared.Features.Translations
             {
                 return await _collection
                     .Find(filter)
-                    .SingleOrDefaultAsync();
+                    .FirstOrDefaultAsync();
             }
             catch (Exception)
             {
@@ -68,6 +68,20 @@ namespace VietBuddy.Shared.Features.Translations
                     .Sort(sort)
                     .Limit(limit)
                     .ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<Translation, bool>> filter)
+        {
+            try
+            {
+                return await _collection
+                    .Find(filter)
+                    .CountDocumentsAsync() > 0;
             }
             catch (Exception)
             {

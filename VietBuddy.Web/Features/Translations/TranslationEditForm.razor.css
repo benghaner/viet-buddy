@@ -2,14 +2,6 @@ p:last-child {
     margin-bottom: 0;
 }
 
-a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 .flag {
     background-size: cover;
     color: transparent;

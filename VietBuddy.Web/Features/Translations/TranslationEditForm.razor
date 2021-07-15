@@ -1,10 +1,25 @@
 @using Blazored.FluentValidation
 @using Blazored.Typeahead
-@inject TranslationRepository TranslationRepository
+@using System.Text.RegularExpressions
+@inject TranslationRepository Repository
+@inject NavigationManager Navigation
 
 @if (!String.IsNullOrEmpty(HeaderText))
 {   
     <h2>@HeaderText</h2>
+}
+
+@if (vietExists)
+{
+    <Alert Color="primary" Icon="far fa-search">
+        Bạn biết
+        <a href="" class="alert-link stretched-link" 
+            @onclick="@(() => Navigation.NavigateTo($"/translations/{Translation.Vietnamese}"))" 
+            @onclick:preventDefault="true">
+            @Translation.Vietnamese
+        </a>
+        rồi.
+    </Alert>
 }
 
 <EditForm EditContext="editContext" OnValidSubmit="Submit">
@@ -14,7 +29,7 @@
         <h6 class="fw-light">Từ hoặc cụm từ</h6>
         <div class="input-group mb-2">
             <label for="vietnamese" class="input-group-text flag flag-vietnam">VN</label>
-            <InputText @bind-Value="Translation.Vietnamese" class="form-control" id="vietnamese" autofocus />
+            <InputText @bind-Value="Translation.Vietnamese" @onfocusout="CheckViet" class="form-control" id="vietnamese" autofocus />
         </div>
         <div class="input-group">
             <label for="english" class="input-group-text flag flag-usa">EN</label>
@@ -37,7 +52,7 @@
                 </button>
             </div>
         }
-        <a role="button" class="link-primary" @onclick="AddEmptyExample">
+        <a role="button" class="link-primary text-decoration-none" @onclick="AddEmptyExample">
             <i class="fal fa-plus me-1"></i>Thêm nữa
         </a>
     </div>
@@ -87,6 +102,7 @@
     [Parameter] public EventCallback<Translation> OnAdded { get; set; }
     private bool isModal;
     private bool isNew;
+    private bool vietExists;
     private EditContext editContext;
     private List<Text> examples = new List<Text>();
     private List<Text> availableTags = new List<Text>();
@@ -115,7 +131,7 @@
 
     private async Task InitializeTagsAsync()
     {
-        var tags = await TranslationRepository.GetTagsAsync();
+        var tags = await Repository.GetTagsAsync();
         availableTags = tags.ToListText();
     }
 
@@ -129,6 +145,21 @@
     }
 
     private Task<Text> AddNewTag(string text) => Task.FromResult(new Text(text));
+
+    private async Task CheckViet()
+    {
+        if (String.IsNullOrEmpty(Translation.Vietnamese))
+        {
+            vietExists = false;
+            return;
+        }
+
+        if (isNew)
+        {
+            vietExists = await Repository
+                .ExistsAsync(t => Regex.IsMatch(t.Vietnamese, RegexPatterns.WholeWord(Translation.Vietnamese), RegexOptions.IgnoreCase));
+        }
+    }
     
     private async Task Submit()
     {
@@ -136,12 +167,12 @@
 
         if (isNew)
         {
-            await TranslationRepository.AddAsync(Translation);
+            await Repository.AddAsync(Translation);
             await OnAdded.InvokeAsync(Translation);
         }
         else
         {
-            await TranslationRepository.UpdateAsync(Translation);
+            await Repository.UpdateAsync(Translation);
         }
 
         if (isModal)
@@ -153,7 +184,7 @@
 
     private async Task Delete()
     {
-        await TranslationRepository.DeleteAsync(Translation);
+        await Repository.DeleteAsync(Translation);
 
         if (isModal)
         {
