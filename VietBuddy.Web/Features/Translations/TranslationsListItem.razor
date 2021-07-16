@@ -8,22 +8,19 @@
         </div>
         <div id="flush-collapse-@Id" class="accordion-collapse collapse" aria-labelledby="flush-heading-@Id" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body d-flex flex-column gap-2">
-                <dl class="row mb-0">
-                    <dt class="col-sm-3 text-muted fw-light">có nghĩa là</dt>
-                    <dd class="col-sm-9">@Translation.English</dd>
-                    @if (Translation.Examples.Any(e => !String.IsNullOrEmpty(e)))
-                    {
-                        <dt class="col-sm-3 text-muted fw-light mb-0">ví dụ</dt>
-                        <dd class="col-sm-9 mb-0">
-                            <ul class="list-unstyled">
-                                @foreach (var example in Translation.Examples)
-                                {
-                                    <li>@((MarkupString)example.Highlight(Translation.Vietnamese))</li>
-                                }
-                            </ul>
-                        </dd>
-                    }
-                </dl>
+                <span class="col-sm-9 text-muted fw-light">@Translation.English</span>
+                @if (Translation.Examples.Any(e => !String.IsNullOrEmpty(e)))
+                {
+                    <ul class="list-unstyled my-1">
+                        @foreach (var example in Translation.Examples)
+                        {
+                            <li class="my-1">
+                                <i class="fad fa-quote-left text-muted pe-1"></i>
+                                @((MarkupString)example.Highlight(Translation.Vietnamese))
+                            </li>
+                        }
+                    </ul>
+                }
                 @if (Translation.Tags.Any(t => !String.IsNullOrEmpty(t)))
                 {
                     <div class="d-flex flex-wrap gap-1 align-items-center border-top border-bottom border-light border-3 py-2">
@@ -33,7 +30,7 @@
                         }
                     </div>
                 }
-                <a href="" class="link-primary text-decoration-none" 
+                <a href="" class="link-primary text-decoration-none ms-auto ms-sm-0" 
                     @onclick="ShowEditModal" 
                     @onclick:preventDefault="true">
                     Sửa bản dịch<i class="fal fa-edit ms-2"></i>
