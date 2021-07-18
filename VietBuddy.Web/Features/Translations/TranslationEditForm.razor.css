@@ -1,0 +1,19 @@
+p:last-child {
+    margin-bottom: 0;
+}
+
+.flag {
+    background-size: cover;
+    color: transparent;
+    width: 3rem;
+}
+
+.flag-vietnam {
+    background-image: url('/img/flag-vietnam.svg');
+    background-position: center;
+}
+
+.flag-usa {
+    background-image: url('/img/flag-usa.svg');
+    background-position: 25%;
+}

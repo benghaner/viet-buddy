@@ -1,7 +1,4 @@
-﻿@inject WordListsRepository WordListsRepository
-@implements IDisposable
-
-<div class="top-row pl-4 navbar navbar-dark">
+﻿<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Việt Buddy</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -12,48 +9,23 @@
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="fas fa-home"></i> Home
+                <i class="fas fa-home"></i> Trang chủ
             </NavLink>
         </li>
-        @foreach (var list in wordLists)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href=@($"wordlist/{list.Id}") Match="NavLinkMatch.All">
-                    <i class="fas fa-book"></i> @list.Title
-                </NavLink>
-            </li>
-        }
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="translations" Match="NavLinkMatch.All">
+                <i class="fas fa-language"></i> Bản dịch
+            </NavLink>
+        </li>
     </ul>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private List<WordList> wordLists = new List<WordList>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        wordLists = await WordListsRepository.GetWordListsAsync();
-        WordListsRepository.WordListAdded += OnWordListChanged;
-        WordListsRepository.WordListDeleted += OnWordListChanged;
-    }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
-    }
-    
-    public async void OnWordListChanged(object source, EventArgs e) => await RefreshWordLists();
-
-    private async Task RefreshWordLists()
-    {
-        wordLists = await WordListsRepository.GetWordListsAsync();
-        StateHasChanged();
-    }
-
-    public void Dispose() 
-    {
-        WordListsRepository.WordListAdded -= OnWordListChanged;
-        WordListsRepository.WordListDeleted -= OnWordListChanged;
     }
 }

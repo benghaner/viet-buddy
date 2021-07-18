@@ -1,0 +1,203 @@
+@using Blazored.FluentValidation
+@using Blazored.Typeahead
+@using System.Text.RegularExpressions
+@inject TranslationRepository Repository
+@inject NavigationManager Navigation
+
+@if (!String.IsNullOrEmpty(HeaderText))
+{   
+    <h2>@HeaderText</h2>
+}
+
+@if (vietExists)
+{
+    <Alert Color="primary" Icon="far fa-search">
+        Bạn biết
+        <a href="" class="alert-link stretched-link" 
+            @onclick="@(() => Navigation.NavigateTo($"/translations/{Translation.Vietnamese}"))" 
+            @onclick:preventDefault="true">
+            @Translation.Vietnamese
+        </a>
+        rồi.
+    </Alert>
+}
+
+<EditForm EditContext="editContext" OnValidSubmit="Submit">
+    <FluentValidationValidator />
+
+    <div class="my-4">
+        <h6 class="fw-light">Từ hoặc cụm từ</h6>
+        <div class="input-group mb-2">
+            <label for="vietnamese" class="input-group-text flag flag-vietnam">VN</label>
+            <InputText @bind-Value="Translation.Vietnamese" @onfocusout="CheckViet" class="form-control" id="vietnamese" autofocus />
+        </div>
+        <div class="input-group">
+            <label for="english" class="input-group-text flag flag-usa">EN</label>
+            <InputText @bind-Value="Translation.English" class="form-control" id="english" />
+        </div>
+    </div>
+
+    <div class="my-4">
+        <h6 class="fw-light">Câu ví dụ</h6>
+        @if (!examples.Any()) { AddEmptyExample(); }
+        @foreach (var example in examples)
+        {
+            <div class="input-group mb-2">
+                <InputText @bind-Value="example.Value" class="form-control" />
+                <button type="button"
+                    class="btn btn-outline-secondary"
+                    aria-label="Delete"
+                    @onclick="@(() => examples.Remove(example))">
+                    <i class="fal fa-trash-alt"></i>
+                </button>
+            </div>
+        }
+        <a role="button" class="link-primary text-decoration-none" @onclick="AddEmptyExample">
+            <i class="fal fa-plus me-1"></i>Thêm nữa
+        </a>
+    </div>
+
+    <div class="my-4">
+        <h6 class="fw-light">Tags</h6>
+        <BlazoredTypeahead SearchMethod="SearchAvailableTags"
+                   @bind-Values="selectedTags"
+                   EnableDropDown=@availableTags.Any()
+                   MinimumLength="2"
+                   AddItemOnEmptyResultMethod="AddNewTag"
+                   placeholder="Tìm hoặc thêm tag mới...">
+            <SelectedTemplate Context="tag">
+                @tag.Value
+            </SelectedTemplate>
+            <HelpTemplate>
+                Điền ít nhất 2 chữ để tìm
+            </HelpTemplate>
+            <NotFoundTemplate Context="searchText">
+                Thêm "@searchText" như là tag mới
+            </NotFoundTemplate>
+            <ResultTemplate Context="tag">
+                @tag.Value
+            </ResultTemplate>
+        </BlazoredTypeahead>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="d-flex gap-1 align-items-center">
+        <button type="submit" class="btn btn-primary @(isNew ? "w-100" : "")">Submit</button>
+        @if (isModal)
+        {
+            <button type="button" @onclick="ModalInstance.CancelAsync" class="btn btn-outline-secondary">Huỷ</button>
+        }
+        @if (!isNew)
+        {
+            <ButtonTrash Size="2x" Class="ms-auto" Clicked="Delete" />
+        }
+    </div>
+</EditForm>
+
+@code {
+    [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public Translation Translation { get; set; } = new Translation();
+    [Parameter] public string HeaderText { get; set; }
+    [Parameter] public EventCallback<Translation> OnAdded { get; set; }
+    private bool isModal;
+    private bool isNew;
+    private bool vietExists;
+    private EditContext editContext;
+    private List<Text> examples = new List<Text>();
+    private List<Text> availableTags = new List<Text>();
+    private IList<Text> selectedTags = new List<Text>();
+
+    protected override void OnParametersSet() => Initialize();
+
+    protected override async Task OnParametersSetAsync() => await InitializeTagsAsync();
+
+    private void Initialize()
+    {
+        isModal = (ModalInstance != null);
+        isNew = String.IsNullOrEmpty(Translation.Id);
+
+        if (!isNew)
+            Translation = Translation.Clone();
+
+        examples = Translation.Examples.ToListText();
+        selectedTags = Translation.Tags.ToListText();
+
+        editContext = new EditContext(Translation);
+        editContext.SetFieldCssClassProvider(new BootstrapCssClassProvider());
+    }
+
+    private void AddEmptyExample() => examples.Add(new Text());
+
+    private async Task InitializeTagsAsync()
+    {
+        var tags = await Repository.GetTagsAsync();
+        availableTags = tags.ToListText();
+    }
+
+    private async Task<IEnumerable<Text>> SearchAvailableTags(string searchText)
+    {
+        var results = availableTags
+            .Where(t => t.Value.ToLower().Contains(searchText.ToLower()))
+            .Except(selectedTags);
+
+        return await Task.FromResult(results.ToList());
+    }
+
+    private Task<Text> AddNewTag(string text) => Task.FromResult(new Text(text));
+
+    private async Task CheckViet()
+    {
+        if (String.IsNullOrEmpty(Translation.Vietnamese))
+        {
+            vietExists = false;
+            return;
+        }
+
+        if (isNew)
+        {
+            vietExists = await Repository
+                .ExistsAsync(t => Regex.IsMatch(t.Vietnamese, RegexPatterns.WholeWord(Translation.Vietnamese), RegexOptions.IgnoreCase));
+        }
+    }
+    
+    private async Task Submit()
+    {
+        PostProcess();
+
+        if (isNew)
+        {
+            await Repository.AddAsync(Translation);
+            await OnAdded.InvokeAsync(Translation);
+        }
+        else
+        {
+            await Repository.UpdateAsync(Translation);
+        }
+
+        if (isModal)
+        {
+            var editResult = new EditResult<Translation>(Translation, EditAction.Modified);
+            await ModalInstance.CloseAsync(ModalResult.Ok(editResult));
+        }
+    }
+
+    private async Task Delete()
+    {
+        await Repository.DeleteAsync(Translation);
+
+        if (isModal)
+        {
+            var editResult = new EditResult<Translation>(Translation, EditAction.Deleted);
+            await ModalInstance.CloseAsync(ModalResult.Ok(editResult));
+        }
+    }
+
+    private void PostProcess()
+    {
+        Translation.Vietnamese = Translation.Vietnamese.Trim();
+        Translation.English = Translation.English.Trim();
+        Translation.Examples = examples.ToListString();
+        Translation.Tags = selectedTags.ToListString();
+    }
+}

@@ -1,0 +1,25 @@
+@page "/translations/{SearchTerm?}"
+@using System.Text.RegularExpressions
+@inject TranslationRepository Repository
+
+<header>
+    <h2>Bản dịch</h2>
+</header>
+<TranslationsSearch />
+<TranslationsList Translations="translations"></TranslationsList>
+
+@code {
+    [Parameter] public string SearchTerm { get; set; }
+    private List<Translation> translations = new List<Translation>();
+        
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!String.IsNullOrEmpty(SearchTerm))
+        {
+            translations = await Repository
+                .FindAllAsync(t => Regex.IsMatch(t.Vietnamese, RegexPatterns.WholeWord(SearchTerm), RegexOptions.IgnoreCase), t => t.Vietnamese);
+        }
+        else
+            translations = await Repository.FindAllAsync(t => true, t => t.Updated, false);
+    }
+}

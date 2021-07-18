@@ -1,0 +1,15 @@
+@if (Translations.Any())
+{
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        @{ var i = 0; }
+        @foreach (var translation in Translations)
+        {
+            i++;
+            <TranslationsListItem Translation="translation" Id="@i" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public List<Translation> Translations { get; set; }
+}

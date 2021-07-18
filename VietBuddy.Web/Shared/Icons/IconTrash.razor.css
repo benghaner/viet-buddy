@@ -1,9 +1,0 @@
-i {
-    color: lightgray;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-i:hover {
-    color: red;
-}
