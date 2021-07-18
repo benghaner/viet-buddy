@@ -195,6 +195,8 @@
 
     private void PostProcess()
     {
+        Translation.Vietnamese = Translation.Vietnamese.Trim();
+        Translation.English = Translation.English.Trim();
         Translation.Examples = examples.ToListString();
         Translation.Tags = selectedTags.ToListString();
     }
