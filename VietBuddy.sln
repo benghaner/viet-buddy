@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VietBuddy.Sandbox", "VietBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VietBuddy.Components", "VietBuddy.Components\VietBuddy.Components.csproj", "{CFE6B843-2668-4587-AAD8-3A1287CA4C0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VietBuddy.Demo", "VietBuddy.Demo\VietBuddy.Demo.csproj", "{C3FA5422-31F9-444B-99F7-5808CBF79E5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{CFE6B843-2668-4587-AAD8-3A1287CA4C0F}.Release|x64.Build.0 = Release|Any CPU
 		{CFE6B843-2668-4587-AAD8-3A1287CA4C0F}.Release|x86.ActiveCfg = Release|Any CPU
 		{CFE6B843-2668-4587-AAD8-3A1287CA4C0F}.Release|x86.Build.0 = Release|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Release|x64.Build.0 = Release|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3FA5422-31F9-444B-99F7-5808CBF79E5A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
