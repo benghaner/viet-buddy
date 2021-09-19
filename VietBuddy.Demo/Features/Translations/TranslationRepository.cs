@@ -18,6 +18,7 @@ namespace VietBuddy.Demo.Features.Translations
 
         public async Task AddAsync(Translation translation)
         {
+            translation.Id = Guid.NewGuid().ToString();
             await Task.Run(() => _translations.Add(translation));
         }
 
