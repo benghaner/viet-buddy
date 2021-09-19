@@ -7,6 +7,7 @@ using VietBuddy.Shared.Features.Translations;
 
 namespace VietBuddy.Demo.Features.Translations
 {
+    #pragma warning disable CS1998
     public class TranslationRepository : ITranslationRepository
     {
         private readonly List<Translation> _translations;
@@ -19,50 +20,59 @@ namespace VietBuddy.Demo.Features.Translations
         public async Task AddAsync(Translation translation)
         {
             translation.Id = Guid.NewGuid().ToString();
-            await Task.Run(() => _translations.Add(translation));
+            _translations.Add(translation);
         }
 
         public async Task DeleteAsync(Translation translation)
         {
-            await Task.Run(() => _translations.RemoveAll(t => t.Id == translation.Id));
+            _translations.RemoveAll(t => t.Id == translation.Id);
         }
 
         public async Task<bool> ExistsAsync(Expression<Func<Translation, bool>> filter)
         {
-            return await Task.Run(() => _translations.AsQueryable()
+            return _translations.AsQueryable()
                 .Where(filter)
-                .Any());
+                .Any();
         }
 
         public async Task<List<Translation>> FindAllAsync(Expression<Func<Translation, bool>> filter, Expression<Func<Translation, object>> sortKey, bool ascending = true, int limit = 100)
         {
-            return await Task.Run(() => _translations);
+            if (ascending == true)
+            {
+                return _translations.AsQueryable()
+                    .Where(filter)
+                    .OrderBy(sortKey)
+                    .ToList();
+            }
+
+            return _translations.AsQueryable()
+                .Where(filter)
+                .OrderByDescending(sortKey)
+                .ToList();
         }
 
         public async Task<Translation> FindAsync(Expression<Func<Translation, bool>> filter)
         {
-            return await Task.Run(() => _translations.AsQueryable()
+            return _translations.AsQueryable()
                 .Where(filter)
-                .FirstOrDefault());
+                .FirstOrDefault();
         }
 
         public async Task<List<string>> GetTagsAsync()
         {
-            return await Task.Run(() => _translations.AsQueryable()
+            return _translations.AsQueryable()
                 .Where(t => t.Tags.Any())
                 .SelectMany(t => t.Tags)
                 .Distinct()
                 .OrderBy(t => t)
-                .ToList());
+                .ToList();
         }
 
         public async Task UpdateAsync(Translation translation)
         {
-            var original = await FindAsync(t => t.Id == translation.Id);
-            translation.Created = original.Created;
             translation.Updated = DateTime.Now;
-            
-            await Task.Run(() => original = translation);
+            _translations.RemoveAll(t => t.Id == translation.Id);
+            await AddAsync(translation);
         }
     }
 }
