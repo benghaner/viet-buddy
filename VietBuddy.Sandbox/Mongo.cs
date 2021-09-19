@@ -8,9 +8,9 @@ namespace VietBuddy.Sandbox
     public class Mongo
     {
         private readonly IMongoClient _client;
-        private readonly TranslationRepository _translations;
+        private readonly ITranslationRepository _translations;
 
-        public Mongo(IMongoClient client, TranslationRepository translations)
+        public Mongo(IMongoClient client, ITranslationRepository translations)
         {
             _client = client;
             _translations = translations;

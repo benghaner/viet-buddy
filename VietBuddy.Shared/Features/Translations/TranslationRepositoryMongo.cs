@@ -8,12 +8,12 @@ using MongoDB.Driver.Linq;
 
 namespace VietBuddy.Shared.Features.Translations
 {
-    public class TranslationRepository
+    public class TranslationRepositoryMongo : ITranslationRepository
     {
         private readonly IMongoCollection<Translation> _collection;
         private const int DefaultLimit = 100;
 
-        public TranslationRepository(IMongoClient mongoClient)
+        public TranslationRepositoryMongo(IMongoClient mongoClient)
         {
             _collection = mongoClient
                 .GetDatabase("viet_buddy")
@@ -47,7 +47,7 @@ namespace VietBuddy.Shared.Features.Translations
                 throw new NotImplementedException();
             }
         }
-        
+
         public async Task<List<Translation>> FindAllAsync(
             Expression<Func<Translation, bool>> filter,
             Expression<Func<Translation, object>> sortKey,

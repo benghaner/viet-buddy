@@ -24,7 +24,7 @@ namespace VietBuddy.Sandbox
                             .GetConnectionString("MongoUri");
                         return new MongoClient(uri);
                     });
-                    services.AddTransient<TranslationRepository>();
+                    services.AddTransient<ITranslationRepository, TranslationRepositoryMongo>();
                     services.AddTransient<Mongo>();
                 });
         }

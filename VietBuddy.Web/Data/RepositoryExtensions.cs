@@ -16,7 +16,7 @@ namespace VietBuddy.Web.Data
                     .GetConnectionString("MongoUri");
                 return new MongoClient(uri);
             });
-            services.AddSingleton<TranslationRepository>();
+            services.AddSingleton<ITranslationRepository, TranslationRepositoryMongo>();
         }
     }
 }
