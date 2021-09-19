@@ -5,15 +5,16 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using VietBuddy.Shared.Features.Translations;
 
-namespace VietBuddy.Shared.Features.Translations
+namespace VietBuddy.Web.Features.Translations
 {
-    public class TranslationRepositoryMongo : ITranslationRepository
+    public class TranslationRepository : ITranslationRepository
     {
         private readonly IMongoCollection<Translation> _collection;
         private const int DefaultLimit = 100;
 
-        public TranslationRepositoryMongo(IMongoClient mongoClient)
+        public TranslationRepository(IMongoClient mongoClient)
         {
             _collection = mongoClient
                 .GetDatabase("viet_buddy")

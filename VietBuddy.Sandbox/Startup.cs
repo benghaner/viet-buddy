@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
-using VietBuddy.Shared.Features.Translations;
 
 namespace VietBuddy.Sandbox
 {
@@ -24,7 +23,6 @@ namespace VietBuddy.Sandbox
                             .GetConnectionString("MongoUri");
                         return new MongoClient(uri);
                     });
-                    services.AddTransient<ITranslationRepository, TranslationRepositoryMongo>();
                     services.AddTransient<Mongo>();
                 });
         }
