@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using VietBuddy.Shared;
 
-namespace VietBuddy.Web.Shared
+namespace VietBuddy.Components
 {
     public static class Utilities
     {

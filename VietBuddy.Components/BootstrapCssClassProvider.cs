@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace VietBuddy.Web.Shared
+namespace VietBuddy.Components
 {
     public class BootstrapCssClassProvider : FieldCssClassProvider
     {
