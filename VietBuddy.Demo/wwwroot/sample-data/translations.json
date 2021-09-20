@@ -1,0 +1,58 @@
+[
+    {
+        "Id": "1",
+        "Vietnamese": "ăn",
+        "English": "to eat",
+        "Examples": [
+            "Ăn cho đời bất buồn đi ba."
+        ],
+        "Tags": [
+            "gia đình là số 1",
+            "tập 1"
+        ],
+        "Created": "2021-07-12T23:23:52.038Z",
+        "Updated": "2021-09-10T11:56:55.049Z"
+    },
+    {
+        "Id": "2",
+        "Vietnamese": "ham ăn",
+        "English": "addicted to eating",
+        "Examples": [
+            "Cái con nhỏ ham ăn này."
+        ],
+        "Tags": [
+            "gia đình là số 1",
+            "tập 1"
+        ],
+        "Created": "2021-07-12T23:23:52.038Z",
+        "Updated": "2021-09-10T11:56:55.049Z"
+    },
+    {
+        "Id": "3",
+        "Vietnamese": "kỹ năng",
+        "English": "skills",
+        "Examples": [
+            "Phù hợp với kỹ năng của bạn."
+        ],
+        "Tags": [
+            "annie",
+            "e288"
+        ],
+        "Created": "2021-07-05T12:31:28.715Z",
+        "Updated": "2021-07-05T17:42:46.283Z"
+    },
+    {
+        "Id": "4",
+        "Vietnamese": "năng lượng",
+        "English": "power",
+        "Examples": [
+            "Năng lượng mặt trời. Cố lên!"
+        ],
+        "Tags": [
+            "gia đình là số 1",
+            "tập 1"
+        ],
+        "Created": "2021-07-05T12:31:28.715Z",
+        "Updated": "2021-07-05T17:42:46.283Z"
+    }
+]
