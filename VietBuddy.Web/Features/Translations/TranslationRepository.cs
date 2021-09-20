@@ -25,8 +25,6 @@ namespace VietBuddy.Web.Features.Translations
         {
             try
             {
-                translation.Created = DateTime.Now;
-                translation.Updated = DateTime.Now;
                 await _collection.InsertOneAsync(translation);
             }
             catch (Exception)
