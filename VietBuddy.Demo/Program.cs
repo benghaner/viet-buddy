@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using VietBuddy.Shared.Features.Translations;
 using VietBuddy.Demo.Features.Translations;
 using Blazored.Modal;
+using System.Net.Http.Json;
 
 namespace VietBuddy.Demo
 {
@@ -23,8 +24,20 @@ namespace VietBuddy.Demo
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBlazoredModal();
             builder.Services.AddScoped<ITranslationRepository, TranslationRepository>();
+            var host = builder.Build();
 
-            await builder.Build().RunAsync();
+            await LoadSampleData(host);
+            await host.RunAsync();
+        }
+
+        public static async Task LoadSampleData(WebAssemblyHost host)
+        {
+            var http = host.Services.GetRequiredService<HttpClient>();
+            var repo = host.Services.GetRequiredService<ITranslationRepository>();
+
+            var translations = await http.GetFromJsonAsync<List<Translation>>("sample-data/translations.json");
+            foreach (var item in translations)
+                await repo.AddAsync(item);
         }
     }
 }

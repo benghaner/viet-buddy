@@ -1,8 +1,4 @@
-﻿@using VietBuddy.Shared.Features.Translations
-@inject HttpClient Http
-@inject ITranslationRepository Repository
-
-<CascadingBlazoredModal>
+﻿<CascadingBlazoredModal>
     <Router AppAssembly="@typeof(Program).Assembly"
                 AdditionalAssemblies="new[] { typeof(TranslationsPage).Assembly }"
                 PreferExactMatches="@true">
@@ -16,12 +12,3 @@
         </NotFound>
     </Router>
 </CascadingBlazoredModal>
-
-@code {
-    protected override async Task OnInitializedAsync()
-    {
-        var translations = await Http.GetFromJsonAsync<List<Translation>>("sample-data/translations.json");
-        foreach (var item in translations)
-            await Repository.AddAsync(item);
-    }
-}
