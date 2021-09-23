@@ -1,5 +1,7 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Việt Buddy</a>
+﻿@inject AppSettings Settings
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">@Settings.Titles.NavMenu</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>

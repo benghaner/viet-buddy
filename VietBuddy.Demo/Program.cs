@@ -11,6 +11,7 @@ using VietBuddy.Shared.Features.Translations;
 using VietBuddy.Demo.Features.Translations;
 using Blazored.Modal;
 using System.Net.Http.Json;
+using VietBuddy.Shared.Settings;
 
 namespace VietBuddy.Demo
 {
@@ -23,6 +24,7 @@ namespace VietBuddy.Demo
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBlazoredModal();
+            builder.Services.AddScoped<AppSettings>();
             builder.Services.AddScoped<ITranslationRepository, TranslationRepository>();
             var host = builder.Build();
 
