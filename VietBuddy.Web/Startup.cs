@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VietBuddy.Shared.Settings;
 using VietBuddy.Web.Data;
 
 namespace VietBuddy.Web
@@ -29,6 +30,7 @@ namespace VietBuddy.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<AppSettings>();
             services.AddMongoDb();
             services.AddBlazoredModal();
         }

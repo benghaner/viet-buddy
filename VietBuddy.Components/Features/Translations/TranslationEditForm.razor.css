@@ -9,11 +9,11 @@ p:last-child {
 }
 
 .flag-vietnam {
-    background-image: url('/img/flag-vietnam.svg');
+    background-image: url('img/flag-vietnam.svg');
     background-position: center;
 }
 
 .flag-usa {
-    background-image: url('/img/flag-usa.svg');
+    background-image: url('img/flag-usa.svg');
     background-position: 25%;
 }

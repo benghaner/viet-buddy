@@ -5,10 +5,11 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using VietBuddy.Shared.Features.Translations;
 
-namespace VietBuddy.Shared.Features.Translations
+namespace VietBuddy.Web.Features.Translations
 {
-    public class TranslationRepository
+    public class TranslationRepository : ITranslationRepository
     {
         private readonly IMongoCollection<Translation> _collection;
         private const int DefaultLimit = 100;
@@ -24,8 +25,6 @@ namespace VietBuddy.Shared.Features.Translations
         {
             try
             {
-                translation.Created = DateTime.Now;
-                translation.Updated = DateTime.Now;
                 await _collection.InsertOneAsync(translation);
             }
             catch (Exception)
@@ -47,7 +46,7 @@ namespace VietBuddy.Shared.Features.Translations
                 throw new NotImplementedException();
             }
         }
-        
+
         public async Task<List<Translation>> FindAllAsync(
             Expression<Func<Translation, bool>> filter,
             Expression<Func<Translation, object>> sortKey,

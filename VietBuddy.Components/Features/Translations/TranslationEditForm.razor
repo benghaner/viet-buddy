@@ -1,7 +1,7 @@
 @using Blazored.FluentValidation
 @using Blazored.Typeahead
 @using System.Text.RegularExpressions
-@inject TranslationRepository Repository
+@inject ITranslationRepository Repository
 @inject NavigationManager Navigation
 
 @if (!String.IsNullOrEmpty(HeaderText))

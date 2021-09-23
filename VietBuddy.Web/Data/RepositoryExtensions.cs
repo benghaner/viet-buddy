@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using VietBuddy.Shared.Features.Translations;
+using VietBuddy.Web.Features.Translations;
 
 namespace VietBuddy.Web.Data
 {
@@ -16,7 +17,7 @@ namespace VietBuddy.Web.Data
                     .GetConnectionString("MongoUri");
                 return new MongoClient(uri);
             });
-            services.AddSingleton<TranslationRepository>();
+            services.AddSingleton<ITranslationRepository, TranslationRepository>();
         }
     }
 }

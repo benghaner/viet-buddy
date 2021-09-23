@@ -22,6 +22,8 @@ namespace VietBuddy.Shared.Features.Translations
         {
             Examples = new List<string>();
             Tags = new List<string>();
+            Created = DateTime.Now;
+            Updated = DateTime.Now;
         }
     }
 
