@@ -6,12 +6,12 @@ namespace VietBuddy.Shared.Settings
     public class AppSettings
     {
         public IConfiguration Configuration { get; }
-        public TitleOptions Titles { get; set; }
+        public NavMenuOptions NavMenu { get; set; }
 
         public AppSettings(IConfiguration configuration)
         {
             Configuration = configuration;
-            Titles = Configuration.GetSection("Titles").Get<TitleOptions>();
+            NavMenu = Configuration.GetSection("NavMenu").Get<NavMenuOptions>();
         }
     }
 }
