@@ -19,6 +19,14 @@
                 <i class="fas fa-language"></i> Bản dịch
             </NavLink>
         </li>
+        @if (ClientOptions.Value.IsDemo)
+        {
+            <li class="nav-item px-3">
+                <a class="nav-link" href="https://github.com/benghaner/viet-buddy" target="_blank">
+                    <i class="fab fa-github"></i> About
+                </a>
+            </li>
+        }
     </ul>
 </div>
 
