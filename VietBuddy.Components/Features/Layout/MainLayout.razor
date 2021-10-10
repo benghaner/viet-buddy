@@ -1,17 +1,12 @@
 @inherits LayoutComponentBase
+@inject IOptions<ClientOptions> ClientOptions
 
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://github.com/benghaner/viet-buddy" target="_blank">About</a>
-        </div>
-
-        <div class="container p-3">
-            @Body
-        </div>
+    <div class="main container p-3">
+        @Body
     </div>
 </div>
