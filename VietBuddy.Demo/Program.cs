@@ -24,7 +24,7 @@ namespace VietBuddy.Demo
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBlazoredModal();
-            builder.Services.AddScoped<AppSettings>();
+            builder.Services.Configure<ClientOptions>(builder.Configuration.GetSection("ClientOptions"));
             builder.Services.AddScoped<ITranslationRepository, TranslationRepository>();
             var host = builder.Build();
 
